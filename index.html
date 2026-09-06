@@ -1,129 +1,370 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07101f">
 <title>Hockey Tracker</title>
 
 <style>
+:root{
+  --bg:#07101f;
+  --panel:#101c2f;
+  --panel2:#16243a;
+  --line:#24344f;
+  --text:#fff;
+  --muted:#8ea0b8;
+  --blue:#2c7df6;
+  --green:#18a66f;
+  --red:#d94c57;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-  background:#07101f;
-  color:white;
-  padding-bottom:80px;
+  background:linear-gradient(180deg,#07101f,#050b14);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;
+  padding-bottom:92px;
+  min-height:100vh;
 }
+
 header{
-  padding:22px 16px 10px;
+  padding:max(18px,env(safe-area-inset-top)) 16px 10px;
 }
-h1,h2{margin:0}
-small{color:#91a0b5}
+
+h1,h2,h3{
+  margin:0;
+}
+
+.eyebrow{
+  font-size:11px;
+  letter-spacing:.15em;
+  font-weight:800;
+  color:#7190bd;
+  margin-bottom:5px;
+}
+
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
 .card{
-  background:#111d30;
-  border-radius:18px;
+  background:rgba(16,28,47,.96);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;
   padding:15px;
   margin:12px;
 }
-input,select{
-  width:100%;
-  box-sizing:border-box;
-  padding:13px;
-  margin:5px 0;
-  border-radius:12px;
-  border:1px solid #293750;
-  background:#0b1525;
-  color:white;
-}
-button{
-  border:0;
-  border-radius:12px;
-  padding:13px;
-  font-weight:700;
-  color:white;
-  background:#2474ed;
-}
-.full{width:100%;margin-top:6px}
-.row{
+
+.section-title{
   display:flex;
   justify-content:space-between;
+  align-items:end;
+  margin:16px 14px 8px;
+}
+
+.section-title small{
+  color:var(--muted);
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  margin:5px 0;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#0b1525;
+  color:white;
+  font-size:16px;
+}
+
+button{
+  border:0;
+  border-radius:13px;
+  padding:13px;
+  font-weight:800;
+  color:white;
+  background:var(--blue);
+  font-size:15px;
+}
+
+button:disabled{
+  opacity:.35;
+}
+
+.full{
+  width:100%;
+}
+
+.ghost{
+  background:#1d2b43;
+}
+
+.green{
+  background:var(--green);
+}
+
+.red{
+  background:var(--red);
+}
+
+.row{
+  display:flex;
   align-items:center;
-  background:#111d30;
-  border-radius:14px;
+  justify-content:space-between;
+  gap:10px;
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:16px;
   margin:8px 12px;
   padding:13px;
 }
+
 .row.selected{
-  outline:2px solid #2474ed;
+  outline:2px solid var(--blue);
 }
-.name{font-weight:800}
-.meta{font-size:12px;color:#91a0b5}
-.pm{font-size:20px;font-weight:900}
-.grid{
+
+.row-left{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  min-width:0;
+}
+
+.num{
+  font-weight:900;
+  min-width:42px;
+}
+
+.name{
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.meta{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.right{
+  text-align:right;
+}
+
+.pm{
+  font-size:20px;
+  font-weight:900;
+}
+
+.topstats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:12px;
+}
+
+.stat{
+  background:var(--panel);
+  border-radius:16px;
+  padding:11px;
+  text-align:center;
+}
+
+.stat small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:3px;
+}
+
+.stat strong{
+  font-size:21px;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.quick-grid.three{
+  grid-template-columns:repeat(3,1fr);
+}
+
+.line-btn{
+  background:#1d2b43;
+  min-height:52px;
+}
+
+.line-btn.active{
+  background:var(--blue);
+}
+
+.big-actions{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:9px;
+  gap:10px;
 }
-.big{
-  min-height:80px;
-  font-size:24px;
+
+.big-actions button{
+  min-height:92px;
+  font-size:17px;
 }
-.green{background:#159965}
-.red{background:#cf4550}
-.gray{background:#20304a}
-.hidden{display:none}
+
+.big-actions .huge{
+  font-size:22px;
+  display:block;
+  margin-bottom:3px;
+}
+
+.selected-box{
+  margin:12px;
+  background:#0c1626;
+  border-radius:16px;
+  padding:12px;
+  border:1px solid var(--line);
+}
+
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:8px;
+}
+
+.chip{
+  background:#1c2b44;
+  border-radius:999px;
+  padding:8px 10px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.fo-row{
+  align-items:stretch;
+}
+
+.fo-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.fo-buttons button{
+  padding:11px 13px;
+  min-width:68px;
+}
+
+.smallbtn{
+  padding:9px 11px;
+  font-size:13px;
+}
+
 .tabs{
   position:fixed;
-  bottom:0;
   left:0;
   right:0;
+  bottom:0;
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  background:#08111f;
-  padding:8px;
+  background:rgba(6,13,24,.95);
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:8px 8px max(8px,env(safe-area-inset-bottom));
+  backdrop-filter:blur(18px);
 }
+
 .tab{
   background:transparent;
-  color:#7e8da5;
+  color:#708097;
 }
+
 .tab.active{
   background:#17253b;
   color:white;
 }
-.view{display:none}
-.view.active{display:block}
-.topstats{
+
+.hidden{
+  display:none!important;
+}
+
+.line-card{
+  background:var(--panel);
+  border-radius:18px;
+  margin:10px 12px;
+  padding:14px;
+}
+
+.line-card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.slot-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:7px;
-  margin:12px;
+  gap:8px;
 }
-.stat{
-  background:#111d30;
-  text-align:center;
-  border-radius:14px;
+
+.slot{
+  background:#0c1626;
+  border:1px solid var(--line);
+  border-radius:13px;
   padding:10px;
 }
-.stat strong{
+
+.slot label{
   display:block;
-  font-size:20px;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+  margin-bottom:5px;
 }
-.segment{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  margin:12px;
-  padding:4px;
-  background:#0c1626;
-  border-radius:14px;
+
+.slot select{
+  margin:0;
+  padding:10px;
+  font-size:13px;
 }
-.segment button{
-  background:transparent;
-  color:#8d9bb1;
+
+.d-grid{
+  grid-template-columns:repeat(2,1fr);
 }
-.segment button.active{
-  background:#1c2b44;
-  color:white;
-}
+
 .delete{
-  background:#5f2930;
+  background:#5b2931;
+}
+
+.notice{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.history-card{
+  background:var(--panel);
+  border-radius:16px;
+  margin:8px 12px;
+  padding:13px;
+}
+
+.history-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 </style>
 </head>
@@ -131,27 +372,38 @@ button{
 <body>
 
 <header>
-  <small>COACH TOOL</small>
+  <div class="eyebrow">COACH TOOL</div>
   <h1>🏒 Hockey Tracker</h1>
 </header>
 
-<div id="game" class="view active">
+<section id="gameView" class="view active">
 
-  <div class="card" id="startCard">
+  <div id="startGameCard" class="card">
     <h2>Game Day</h2>
-    <p><small>Track +/- and faceoffs from the bench.</small></p>
+    <p class="notice">Your active game autosaves after every tap.</p>
 
-    <input id="opponent" placeholder="Opponent name">
+    <input id="opponentInput" placeholder="Opponent name">
 
-    <button class="full" onclick="startGame()">Start New Game</button>
+    <button class="full" onclick="startGame()">
+      Start New Game
+    </button>
+
+    <button
+      id="resumeBtn"
+      class="full ghost hidden"
+      style="margin-top:8px"
+      onclick="resumeGame()">
+      Resume Active Game
+    </button>
   </div>
 
   <div id="gamePanel" class="hidden">
 
     <div class="topstats">
+
       <div class="stat">
         <small>Players</small>
-        <strong id="playersTotal">0</strong>
+        <strong id="gamePlayerCount">0</strong>
       </div>
 
       <div class="stat">
@@ -163,1010 +415,1920 @@ button{
         <small>FO%</small>
         <strong id="teamFO">—</strong>
       </div>
+
     </div>
 
-    <div class="segment">
-      <button id="playerModeBtn" class="active"
-      onclick="mode('player')">
-      Player Stats
-      </button>
-
-      <button id="iceModeBtn"
-      onclick="mode('ice')">
-      On-Ice +/-
-      </button>
-    </div>
-
-    <div id="playerMode">
-      <div id="gamePlayers"></div>
-
-      <div id="playerControls" class="card hidden">
-
-        <h3 id="selectedName"></h3>
-        <small id="selectedFO"></small>
-
-        <div class="grid">
-
-          <button class="big gray"
-          onclick="playerEvent('plus')">
-          +
-          <br><small>Manual Plus</small>
-          </button>
-
-          <button class="big gray"
-          onclick="playerEvent('minus')">
-          −
-          <br><small>Manual Minus</small>
-          </button>
-
-          <button class="big green"
-          onclick="playerEvent('win')">
-          W
-          <br><small>FO Win</small>
-          </button>
-
-          <button class="big red"
-          onclick="playerEvent('loss')">
-          L
-          <br><small>FO Loss</small>
-          </button>
-
-        </div>
-
-        <button class="full gray"
-        onclick="undoPlayer()">
-        Undo Last Player Event
-        </button>
-
-      </div>
-    </div>
-
-    <div id="iceMode" class="hidden">
-
-      <div class="card">
-        <b>Select players on ice</b>
-        <br>
-        <small id="iceCount">0 selected</small>
+    <div class="section-title">
+      <div>
+        <div class="eyebrow">QUICK SELECT</div>
+        <h2>Lines</h2>
       </div>
 
-      <div id="icePlayers"></div>
-
-      <div class="card">
-
-        <div class="grid">
-
-          <button class="big green"
-          onclick="goal(1,'goalFor')">
-          GOAL FOR
-          <br><small>+1 selected players</small>
-          </button>
-
-          <button class="big red"
-          onclick="goal(-1,'goalAgainst')">
-          GOAL AGAINST
-          <br><small>-1 selected players</small>
-          </button>
-
-        </div>
-
-        <div class="grid" style="margin-top:10px">
-
-          <button class="gray"
-          onclick="clearIce()">
-          Clear Selection
-          </button>
-
-          <button class="gray"
-          onclick="undoGoal()">
-          Undo Goal
-          </button>
-
-        </div>
-      </div>
+      <small id="selectedCount">
+        0 selected
+      </small>
     </div>
 
     <div class="card">
 
-      <button class="full"
-      onclick="saveGame()">
-      Save Game
+      <div class="eyebrow">
+        FORWARDS
+      </div>
+
+      <div
+        id="forwardLineButtons"
+        class="quick-grid">
+      </div>
+
+      <div
+        class="eyebrow"
+        style="margin-top:14px">
+        DEFENSE
+      </div>
+
+      <div
+        id="defensePairButtons"
+        class="quick-grid three">
+      </div>
+
+    </div>
+
+    <div class="selected-box">
+
+      <strong>
+        Players on ice
+      </strong>
+
+      <div
+        id="selectedChips"
+        class="chips">
+      </div>
+
+    </div>
+
+    <div class="section-title">
+
+      <div>
+        <div class="eyebrow">
+          MANUAL ADJUST
+        </div>
+
+        <h2>
+          On-Ice Players
+        </h2>
+      </div>
+
+      <small>
+        Tap to add/remove
+      </small>
+
+    </div>
+
+    <div id="onIcePlayerList"></div>
+
+    <div class="card">
+
+      <div class="big-actions">
+
+        <button
+          class="green"
+          onclick="applyGoal(1,'goalFor')">
+
+          <span class="huge">
+            GOAL FOR
+          </span>
+
+          +1 selected
+        </button>
+
+        <button
+          class="red"
+          onclick="applyGoal(-1,'goalAgainst')">
+
+          <span class="huge">
+            GOAL AGAINST
+          </span>
+
+          -1 selected
+        </button>
+
+      </div>
+
+      <div
+        class="quick-grid"
+        style="margin-top:9px">
+
+        <button
+          class="ghost"
+          onclick="undoGoal()">
+          Undo Last Goal
+        </button>
+
+        <button
+          class="ghost"
+          onclick="clearOnIce()">
+          Clear Selection
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="section-title">
+
+      <div>
+        <div class="eyebrow">
+          FACE-OFFS
+        </div>
+
+        <h2>
+          Centers
+        </h2>
+      </div>
+
+      <small>
+        One-tap tracking
+      </small>
+
+    </div>
+
+    <div id="faceoffList"></div>
+
+    <div class="card">
+
+      <button
+        class="full"
+        onclick="saveGame()">
+        Save Game to History
       </button>
 
-      <button class="full gray"
-      onclick="endGame()">
-      End Game
+      <button
+        class="full ghost"
+        style="margin-top:8px"
+        onclick="endGame()">
+        End Active Game
       </button>
 
     </div>
 
   </div>
 
-</div>
+</section>
 
+<section id="linesView" class="view">
 
-<div id="roster" class="view">
+  <div class="card">
 
-<div class="card">
+    <h2>
+      Lines & D Pairs
+    </h2>
 
-<h2>Roster</h2>
+    <p class="notice">
+      Set these once. During a game, tap a forward line and a D pair to instantly select those 5 skaters.
+    </p>
 
-<input id="number" type="number"
-placeholder="Jersey number">
+  </div>
 
-<input id="name"
-placeholder="Player name">
+  <div id="linesEditor"></div>
 
-<select id="position">
-<option>C</option>
-<option>LW</option>
-<option>RW</option>
-<option>D</option>
-<option>G</option>
-</select>
+</section>
 
-<button class="full"
-onclick="addPlayer()">
-Add Player
-</button>
+<section id="rosterView" class="view">
 
-</div>
+  <div class="card">
 
-<div id="rosterList"></div>
+    <h2>
+      Roster
+    </h2>
 
-</div>
+    <input
+      id="playerNumber"
+      inputmode="numeric"
+      placeholder="Jersey #">
 
+    <input
+      id="playerName"
+      placeholder="Player name">
 
-<div id="season" class="view">
+    <select id="playerPosition">
+      <option>C</option>
+      <option>LW</option>
+      <option>RW</option>
+      <option>D</option>
+      <option>G</option>
+    </select>
 
-<div class="card">
-<h2>Season Totals</h2>
-<small>Calculated from saved games.</small>
-</div>
+    <button
+      class="full"
+      onclick="addPlayer()">
+      Add Player
+    </button>
 
-<div id="seasonList"></div>
+  </div>
 
-</div>
+  <div id="rosterList"></div>
 
+</section>
 
-<div id="history" class="view">
+<section id="statsView" class="view">
 
-<div class="card">
-<h2>Game History</h2>
-</div>
+  <div class="card">
 
-<div id="historyList"></div>
+    <h2>
+      Season Stats
+    </h2>
 
-</div>
+    <p class="notice">
+      Totals are calculated from saved games.
+    </p>
 
+  </div>
 
-<div class="tabs">
+  <div id="seasonList"></div>
 
-<button class="tab active"
-onclick="showTab('game',this)">
-Game
-</button>
+  <div class="section-title">
+    <h2>
+      Game History
+    </h2>
+  </div>
 
-<button class="tab"
-onclick="showTab('roster',this)">
-Roster
-</button>
+  <div id="historyList"></div>
 
-<button class="tab"
-onclick="showTab('season',this)">
-Season
-</button>
+</section>
 
-<button class="tab"
-onclick="showTab('history',this)">
-History
-</button>
+<nav class="tabs">
 
-</div>
+  <button
+    class="tab active"
+    onclick="showTab('gameView',this)">
+    Game
+  </button>
 
+  <button
+    class="tab"
+    onclick="showTab('linesView',this)">
+    Lines
+  </button>
+
+  <button
+    class="tab"
+    onclick="showTab('rosterView',this)">
+    Roster
+  </button>
+
+  <button
+    class="tab"
+    onclick="showTab('statsView',this)">
+    Stats
+  </button>
+
+</nav>
 
 <script>
 
-let roster =
-JSON.parse(localStorage.getItem("hockeyRoster") || "[]");
+const LS={
+  roster:"ht_roster_v3",
+  games:"ht_games_v3",
+  lines:"ht_lines_v3",
+  active:"ht_active_v3"
+};
 
-let games =
-JSON.parse(localStorage.getItem("hockeyGames") || "[]");
+let roster=
+JSON.parse(
+  localStorage.getItem(LS.roster)
+  || "[]"
+);
 
-let currentGame=null;
+let games=
+JSON.parse(
+  localStorage.getItem(LS.games)
+  || "[]"
+);
 
-let selectedPlayer=null;
+let lines=
+JSON.parse(
+  localStorage.getItem(LS.lines)
+  || "null"
+)
+|| defaultLines();
 
-let onIce=new Set();
+let activeGame=
+JSON.parse(
+  localStorage.getItem(LS.active)
+  || "null"
+);
 
-function id(){
-return Date.now().toString(36)+
-Math.random().toString(36).slice(2);
+let onIce=
+new Set(
+  activeGame?.onIce || []
+);
+
+function uid(){
+
+  return Date.now().toString(36)
+  +
+  Math.random().toString(36).slice(2);
+
 }
 
 function signed(n){
-return n>0 ? "+"+n : n;
+
+  return n>0
+  ? `+${n}`
+  : `${n}`;
+
 }
 
-function save(){
-localStorage.setItem(
-"hockeyRoster",
-JSON.stringify(roster)
-);
+function defaultLines(){
 
-localStorage.setItem(
-"hockeyGames",
-JSON.stringify(games)
-);
+  return{
+
+    forwards:[
+
+      {
+        name:"Line 1",
+        C:"",
+        LW:"",
+        RW:""
+      },
+
+      {
+        name:"Line 2",
+        C:"",
+        LW:"",
+        RW:""
+      },
+
+      {
+        name:"Line 3",
+        C:"",
+        LW:"",
+        RW:""
+      },
+
+      {
+        name:"Line 4",
+        C:"",
+        LW:"",
+        RW:""
+      }
+
+    ],
+
+    defense:[
+
+      {
+        name:"D Pair 1",
+        LD:"",
+        RD:""
+      },
+
+      {
+        name:"D Pair 2",
+        LD:"",
+        RD:""
+      },
+
+      {
+        name:"D Pair 3",
+        LD:"",
+        RD:""
+      }
+
+    ]
+
+  };
+
 }
 
-function showTab(view,button){
+function persist(){
 
-document.querySelectorAll(".view")
-.forEach(v=>v.classList.remove("active"));
+  localStorage.setItem(
+    LS.roster,
+    JSON.stringify(roster)
+  );
 
-document.getElementById(view)
-.classList.add("active");
+  localStorage.setItem(
+    LS.games,
+    JSON.stringify(games)
+  );
 
-document.querySelectorAll(".tab")
-.forEach(b=>b.classList.remove("active"));
+  localStorage.setItem(
+    LS.lines,
+    JSON.stringify(lines)
+  );
 
-button.classList.add("active");
+  if(activeGame){
 
-render();
+    activeGame.onIce=
+    [...onIce];
+
+    localStorage.setItem(
+      LS.active,
+      JSON.stringify(activeGame)
+    );
+
+  }else{
+
+    localStorage.removeItem(
+      LS.active
+    );
+
+  }
+
+}
+
+function showTab(id,btn){
+
+  document
+  .querySelectorAll(".view")
+  .forEach(
+    v=>v.classList.remove("active")
+  );
+
+  document
+  .querySelectorAll(".tab")
+  .forEach(
+    b=>b.classList.remove("active")
+  );
+
+  document
+  .getElementById(id)
+  .classList.add("active");
+
+  btn.classList.add("active");
+
+  renderAll();
 
 }
 
 function addPlayer(){
 
-let number=
-document.getElementById("number").value;
+  const number=
+  document
+  .getElementById("playerNumber")
+  .value
+  .trim();
 
-let name=
-document.getElementById("name").value.trim();
+  const name=
+  document
+  .getElementById("playerName")
+  .value
+  .trim();
 
-let position=
-document.getElementById("position").value;
+  const position=
+  document
+  .getElementById("playerPosition")
+  .value;
 
-if(!name){
-alert("Enter player name.");
-return;
+  if(!name){
+
+    return alert(
+      "Enter a player name."
+    );
+
+  }
+
+  roster.push({
+
+    id:uid(),
+    number,
+    name,
+    position
+
+  });
+
+  roster.sort(
+    (a,b)=>
+    (parseInt(a.number)||9999)
+    -
+    (parseInt(b.number)||9999)
+  );
+
+  document
+  .getElementById("playerNumber")
+  .value="";
+
+  document
+  .getElementById("playerName")
+  .value="";
+
+  persist();
+  renderAll();
+
 }
 
-roster.push({
-id:id(),
-number,
-name,
-position
-});
+function deletePlayer(id){
 
-document.getElementById("number").value="";
-document.getElementById("name").value="";
+  if(
+    !confirm(
+      "Delete this player?"
+    )
+  )return;
 
-save();
-render();
+  roster=
+  roster.filter(
+    p=>p.id!==id
+  );
 
-}
+  lines.forwards
+  .forEach(
+    l=>
+    ["C","LW","RW"]
+    .forEach(
+      k=>{
+        if(l[k]===id){
+          l[k]="";
+        }
+      }
+    )
+  );
 
-function deletePlayer(pid){
+  lines.defense
+  .forEach(
+    l=>
+    ["LD","RD"]
+    .forEach(
+      k=>{
+        if(l[k]===id){
+          l[k]="";
+        }
+      }
+    )
+  );
 
-if(!confirm("Delete this player?"))
-return;
+  games.forEach(
+    g=>
+    g.stats=
+    g.stats.filter(
+      s=>s.playerId!==id
+    )
+  );
 
-roster=
-roster.filter(p=>p.id!==pid);
+  if(activeGame){
 
-save();
-render();
+    activeGame.stats=
+    activeGame.stats.filter(
+      s=>s.playerId!==id
+    );
+
+  }
+
+  onIce.delete(id);
+
+  persist();
+  renderAll();
 
 }
 
 function startGame(){
 
-if(roster.length===0){
+  if(!roster.length){
 
-alert("Add players to your roster first.");
+    return alert(
+      "Add your roster first."
+    );
 
-showTab(
-"roster",
-document.querySelectorAll(".tab")[1]
-);
+  }
 
-return;
-}
+  activeGame={
 
-let opponent=
-document.getElementById("opponent").value.trim();
+    id:uid(),
 
-currentGame={
-id:id(),
-opponent:opponent||"Opponent",
-date:new Date().toISOString(),
+    opponent:
+    document
+    .getElementById("opponentInput")
+    .value
+    .trim()
+    ||
+    "Opponent",
 
-stats:roster.map(p=>({
+    date:
+    new Date().toISOString(),
 
-playerId:p.id,
-plusMinus:0,
-wins:0,
-losses:0
+    stats:
+    roster.map(
+      p=>({
 
-})),
+        playerId:p.id,
+        plusMinus:0,
+        wins:0,
+        losses:0
 
-events:[]
-};
+      })
+    ),
 
-selectedPlayer=null;
-onIce.clear();
+    events:[],
 
-renderGame();
+    onIce:[]
 
-}
+  };
 
-function stat(pid){
+  onIce.clear();
 
-return currentGame.stats
-.find(s=>s.playerId===pid);
-
-}
-
-function mode(type){
-
-document.getElementById("playerMode")
-.classList.toggle(
-"hidden",
-type!=="player"
-);
-
-document.getElementById("iceMode")
-.classList.toggle(
-"hidden",
-type!=="ice"
-);
-
-document.getElementById("playerModeBtn")
-.classList.toggle(
-"active",
-type==="player"
-);
-
-document.getElementById("iceModeBtn")
-.classList.toggle(
-"active",
-type==="ice"
-);
+  persist();
+  renderAll();
 
 }
 
-function selectPlayer(pid){
+function resumeGame(){
 
-selectedPlayer=pid;
+  if(activeGame){
 
-renderGame();
+    onIce=
+    new Set(
+      activeGame.onIce || []
+    );
 
-}
+    renderAll();
 
-function toggleIce(pid){
-
-if(onIce.has(pid))
-onIce.delete(pid);
-
-else
-onIce.add(pid);
-
-renderGame();
+  }
 
 }
 
-function playerEvent(type){
+function stat(id){
 
-if(!selectedPlayer)return;
-
-let s=stat(selectedPlayer);
-
-if(type==="plus")
-s.plusMinus++;
-
-if(type==="minus")
-s.plusMinus--;
-
-if(type==="win")
-s.wins++;
-
-if(type==="loss")
-s.losses++;
-
-currentGame.events.push({
-type,
-playerIds:[selectedPlayer]
-});
-
-renderGame();
+  return activeGame
+  ?.stats
+  .find(
+    s=>s.playerId===id
+  );
 
 }
 
-function undoPlayer(){
+function togglePlayer(id){
 
-if(!selectedPlayer)return;
+  if(onIce.has(id)){
 
-for(
-let i=currentGame.events.length-1;
-i>=0;
-i--
+    onIce.delete(id);
+
+  }else{
+
+    onIce.add(id);
+
+  }
+
+  persist();
+  renderGame();
+
+}
+
+function clearOnIce(){
+
+  onIce.clear();
+
+  persist();
+  renderGame();
+
+}
+
+function selectForwardLine(i){
+
+  const ids=
+  ["C","LW","RW"]
+  .map(
+    k=>lines.forwards[i][k]
+  )
+  .filter(Boolean);
+
+  const defenseIds=
+  new Set(
+
+    roster
+    .filter(
+      p=>
+      p.position==="D"
+      &&
+      onIce.has(p.id)
+    )
+    .map(
+      p=>p.id
+    )
+
+  );
+
+  onIce=
+  new Set([
+    ...defenseIds,
+    ...ids
+  ]);
+
+  persist();
+  renderGame();
+
+}
+
+function selectDefensePair(i){
+
+  const ids=
+  ["LD","RD"]
+  .map(
+    k=>lines.defense[i][k]
+  )
+  .filter(Boolean);
+
+  const forwardIds=
+  new Set(
+
+    roster
+    .filter(
+      p=>
+      p.position!=="D"
+      &&
+      p.position!=="G"
+      &&
+      onIce.has(p.id)
+    )
+    .map(
+      p=>p.id
+    )
+
+  );
+
+  onIce=
+  new Set([
+    ...forwardIds,
+    ...ids
+  ]);
+
+  persist();
+  renderGame();
+
+}
+
+function applyGoal(
+  delta,
+  type
 ){
 
-let e=currentGame.events[i];
+  if(!activeGame)return;
 
-if(
-e.playerIds.length===1 &&
-e.playerIds[0]===selectedPlayer &&
-!e.type.startsWith("goal")
-){
+  if(!onIce.size){
 
-let s=stat(selectedPlayer);
+    return alert(
+      "Select the players who were on the ice."
+    );
 
-if(e.type==="plus")
-s.plusMinus--;
+  }
 
-if(e.type==="minus")
-s.plusMinus++;
+  activeGame.stats
+  .forEach(
+    s=>{
 
-if(e.type==="win")
-s.wins=Math.max(0,s.wins-1);
+      if(
+        onIce.has(
+          s.playerId
+        )
+      ){
 
-if(e.type==="loss")
-s.losses=Math.max(0,s.losses-1);
+        s.plusMinus+=delta;
 
-currentGame.events.splice(i,1);
+      }
 
-break;
-}
+    }
+  );
 
-}
+  activeGame.events.push({
 
-renderGame();
+    id:uid(),
+    type,
+    playerIds:[...onIce]
 
-}
+  });
 
-function goal(amount,type){
-
-if(onIce.size===0){
-
-alert(
-"Select the players who were on the ice."
-);
-
-return;
-}
-
-currentGame.stats.forEach(s=>{
-
-if(onIce.has(s.playerId))
-s.plusMinus+=amount;
-
-});
-
-currentGame.events.push({
-type,
-playerIds:[...onIce]
-});
-
-renderGame();
+  persist();
+  renderGame();
 
 }
 
 function undoGoal(){
 
-for(
-let i=currentGame.events.length-1;
-i>=0;
-i--
+  if(!activeGame)return;
+
+  for(
+    let i=
+    activeGame.events.length-1;
+    i>=0;
+    i--
+  ){
+
+    const e=
+    activeGame.events[i];
+
+    if(
+      e.type==="goalFor"
+      ||
+      e.type==="goalAgainst"
+    ){
+
+      const reverse=
+      e.type==="goalFor"
+      ? -1
+      : 1;
+
+      activeGame.stats
+      .forEach(
+        s=>{
+
+          if(
+            e.playerIds
+            .includes(
+              s.playerId
+            )
+          ){
+
+            s.plusMinus+=reverse;
+
+          }
+
+        }
+      );
+
+      activeGame.events
+      .splice(i,1);
+
+      break;
+
+    }
+
+  }
+
+  persist();
+  renderGame();
+
+}
+
+function faceoff(
+  id,
+  result
 ){
 
-let e=currentGame.events[i];
+  if(!activeGame)return;
 
-if(
-e.type==="goalFor" ||
-e.type==="goalAgainst"
-){
+  const s=
+  stat(id);
 
-let reverse=
-e.type==="goalFor" ? -1 : 1;
+  if(!s)return;
 
-currentGame.stats.forEach(s=>{
+  if(result==="win"){
 
-if(e.playerIds.includes(s.playerId))
-s.plusMinus+=reverse;
+    s.wins++;
 
-});
+  }else{
 
-currentGame.events.splice(i,1);
+    s.losses++;
 
-break;
+  }
+
+  activeGame.events.push({
+
+    id:uid(),
+
+    type:
+    result==="win"
+    ? "faceoffWin"
+    : "faceoffLoss",
+
+    playerIds:[id]
+
+  });
+
+  persist();
+  renderGame();
+
 }
 
-}
+function undoFaceoff(id){
 
-renderGame();
+  if(!activeGame)return;
 
-}
+  for(
+    let i=
+    activeGame.events.length-1;
+    i>=0;
+    i--
+  ){
 
-function clearIce(){
+    const e=
+    activeGame.events[i];
 
-onIce.clear();
+    if(
+      e.playerIds?.length===1
+      &&
+      e.playerIds[0]===id
+      &&
+      (
+        e.type==="faceoffWin"
+        ||
+        e.type==="faceoffLoss"
+      )
+    ){
 
-renderGame();
+      const s=
+      stat(id);
+
+      if(
+        e.type==="faceoffWin"
+      ){
+
+        s.wins=
+        Math.max(
+          0,
+          s.wins-1
+        );
+
+      }else{
+
+        s.losses=
+        Math.max(
+          0,
+          s.losses-1
+        );
+
+      }
+
+      activeGame.events
+      .splice(i,1);
+
+      break;
+
+    }
+
+  }
+
+  persist();
+  renderGame();
 
 }
 
 function saveGame(){
 
-if(!currentGame)return;
+  if(!activeGame)return;
 
-let copy=
-JSON.parse(
-JSON.stringify(currentGame)
-);
+  const copy=
+  JSON.parse(
+    JSON.stringify(
+      activeGame
+    )
+  );
 
-let index=
-games.findIndex(
-g=>g.id===copy.id
-);
+  const idx=
+  games.findIndex(
+    g=>g.id===copy.id
+  );
 
-if(index>=0)
-games[index]=copy;
+  if(idx>=0){
 
-else
-games.unshift(copy);
+    games[idx]=copy;
 
-save();
+  }else{
 
-alert("Game saved.");
+    games.unshift(copy);
 
-render();
+  }
+
+  persist();
+  renderAll();
+
+  alert(
+    "Game saved."
+  );
 
 }
 
 function endGame(){
 
-if(!confirm(
-"End current game?"
-))
-return;
+  if(!activeGame)return;
 
-currentGame=null;
-selectedPlayer=null;
-onIce.clear();
+  if(
+    !confirm(
+      "End the active game? Your latest taps are already autosaved."
+    )
+  )return;
 
-renderGame();
+  activeGame=null;
 
-}
+  onIce.clear();
 
-function renderGame(){
-
-let panel=
-document.getElementById("gamePanel");
-
-panel.classList.toggle(
-"hidden",
-!currentGame
-);
-
-if(!currentGame)
-return;
-
-document.getElementById("playersTotal")
-.textContent=
-currentGame.stats.length;
-
-let pm=
-currentGame.stats.reduce(
-(a,s)=>a+s.plusMinus,
-0
-);
-
-document.getElementById("netPM")
-.textContent=signed(pm);
-
-let wins=
-currentGame.stats.reduce(
-(a,s)=>a+s.wins,
-0
-);
-
-let losses=
-currentGame.stats.reduce(
-(a,s)=>a+s.losses,
-0
-);
-
-document.getElementById("teamFO")
-.textContent=
-wins+losses
-?
-Math.round(
-wins/(wins+losses)*100
-)+"%"
-:
-"—";
-
-
-let gameList=
-document.getElementById("gamePlayers");
-
-gameList.innerHTML="";
-
-currentGame.stats.forEach(s=>{
-
-let p=
-roster.find(
-x=>x.id===s.playerId
-);
-
-if(!p)return;
-
-let total=s.wins+s.losses;
-
-let row=
-document.createElement("div");
-
-row.className=
-"row "+
-(selectedPlayer===p.id
-?"selected":"");
-
-row.innerHTML=`
-
-<div>
-<div class="name">
-#${p.number} ${p.name}
-</div>
-
-<div class="meta">
-${p.position}
-</div>
-</div>
-
-<div style="text-align:right">
-
-<div class="pm">
-${signed(s.plusMinus)}
-</div>
-
-<div class="meta">
-${
-total
-?
-`FO ${s.wins}-${s.losses}
-• ${Math.round(
-s.wins/total*100
-)}%`
-:
-"FO —"
-}
-</div>
-
-</div>
-`;
-
-row.onclick=
-()=>selectPlayer(p.id);
-
-gameList.appendChild(row);
-
-});
-
-
-let controls=
-document.getElementById("playerControls");
-
-controls.classList.toggle(
-"hidden",
-!selectedPlayer
-);
-
-if(selectedPlayer){
-
-let p=
-roster.find(
-x=>x.id===selectedPlayer
-);
-
-let s=stat(selectedPlayer);
-
-document.getElementById("selectedName")
-.textContent=
-`#${p.number} ${p.name}`;
-
-document.getElementById("selectedFO")
-.textContent=
-`FO ${s.wins}-${s.losses}`;
+  persist();
+  renderAll();
 
 }
 
+function setLine(
+  type,
+  index,
+  key,
+  val
+){
 
-let iceList=
-document.getElementById("icePlayers");
+  lines[type][index][key]=val;
 
-iceList.innerHTML="";
+  persist();
+  renderAll();
 
-currentGame.stats.forEach(s=>{
+}
 
-let p=
-roster.find(
-x=>x.id===s.playerId
-);
+function playerOptions(
+  selected,
+  filter
+){
 
-if(!p)return;
+  const list=
+  roster.filter(filter);
 
-let row=
-document.createElement("div");
-
-row.className=
-"row "+
-(onIce.has(p.id)
-?"selected":"");
-
-row.innerHTML=`
-
-<div>
-<div class="name">
-#${p.number} ${p.name}
-</div>
-
-<div class="meta">
-${p.position}
-</div>
-</div>
-
-<div>
-
-<span class="pm">
-${signed(s.plusMinus)}
-</span>
-
-&nbsp;
-
-<span style="font-size:22px">
-${onIce.has(p.id)?"✓":"○"}
-</span>
-
-</div>
-`;
-
-row.onclick=
-()=>toggleIce(p.id);
-
-iceList.appendChild(row);
-
-});
-
-document.getElementById("iceCount")
-.textContent=
-onIce.size+" selected";
+  return
+  `<option value="">—</option>`
+  +
+  list.map(
+    p=>
+    `<option value="${p.id}" ${
+      p.id===selected
+      ? "selected"
+      : ""
+    }>
+    #${p.number} ${p.name}
+    </option>`
+  )
+  .join("");
 
 }
 
 function renderRoster(){
 
-let list=
-document.getElementById("rosterList");
+  const el=
+  document
+  .getElementById("rosterList");
 
-list.innerHTML="";
+  el.innerHTML="";
 
-if(roster.length===0){
+  if(!roster.length){
 
-list.innerHTML=
-'<div class="card"><small>No players yet.</small></div>';
+    el.innerHTML=
+    `<div class="card notice">
+    No players yet.
+    </div>`;
 
-return;
-}
+    return;
 
-roster.forEach(p=>{
+  }
 
-let row=
-document.createElement("div");
+  roster.forEach(
+    p=>{
 
-row.className="row";
+      const row=
+      document
+      .createElement("div");
 
-row.innerHTML=`
+      row.className="row";
 
-<div>
+      row.innerHTML=`
 
-<div class="name">
-#${p.number} ${p.name}
-</div>
+      <div class="row-left">
 
-<div class="meta">
-${p.position}
-</div>
+        <div class="num">
+          #${p.number}
+        </div>
 
-</div>
+        <div>
 
-<button class="delete">
-Delete
-</button>
-`;
+          <div class="name">
+            ${p.name}
+          </div>
 
-row.querySelector("button")
-.onclick=
-()=>deletePlayer(p.id);
+          <div class="meta">
+            ${p.position}
+          </div>
 
-list.appendChild(row);
+        </div>
 
-});
+      </div>
 
-}
+      <button class="delete smallbtn">
+        Delete
+      </button>
+      `;
 
-function renderSeason(){
+      row
+      .querySelector("button")
+      .onclick=
+      ()=>deletePlayer(p.id);
 
-let list=
-document.getElementById("seasonList");
+      el.appendChild(row);
 
-list.innerHTML="";
-
-roster.forEach(p=>{
-
-let pm=0;
-let wins=0;
-let losses=0;
-
-games.forEach(g=>{
-
-let s=
-g.stats.find(
-x=>x.playerId===p.id
-);
-
-if(!s)return;
-
-pm+=s.plusMinus;
-wins+=s.wins;
-losses+=s.losses;
-
-});
-
-let total=wins+losses;
-
-let row=
-document.createElement("div");
-
-row.className="row";
-
-row.innerHTML=`
-
-<div>
-
-<div class="name">
-#${p.number} ${p.name}
-</div>
-
-<div class="meta">
-${p.position}
-</div>
-
-</div>
-
-<div style="text-align:right">
-
-<div class="pm">
-${signed(pm)}
-</div>
-
-<div class="meta">
-${
-total
-?
-`FO ${wins}-${losses}
-• ${Math.round(
-wins/total*100
-)}%`
-:
-"FO —"
-}
-</div>
-
-</div>
-`;
-
-list.appendChild(row);
-
-});
+    }
+  );
 
 }
 
-function renderHistory(){
+function renderLines(){
 
-let list=
-document.getElementById("historyList");
+  const el=
+  document
+  .getElementById("linesEditor");
 
-list.innerHTML="";
+  el.innerHTML="";
 
-if(games.length===0){
+  lines.forwards
+  .forEach(
+    (l,i)=>{
 
-list.innerHTML=
-'<div class="card"><small>No saved games yet.</small></div>';
+      const card=
+      document
+      .createElement("div");
 
-return;
+      card.className=
+      "line-card";
+
+      card.innerHTML=`
+
+      <div class="line-card-head">
+
+        <strong>
+          ${l.name}
+        </strong>
+
+      </div>
+
+      <div class="slot-grid">
+
+        <div class="slot">
+
+          <label>
+            LW
+          </label>
+
+          <select
+          onchange="setLine('forwards',${i},'LW',this.value)">
+
+          ${
+            playerOptions(
+              l.LW,
+              p=>
+              p.position!=="D"
+              &&
+              p.position!=="G"
+            )
+          }
+
+          </select>
+
+        </div>
+
+        <div class="slot">
+
+          <label>
+            C
+          </label>
+
+          <select
+          onchange="setLine('forwards',${i},'C',this.value)">
+
+          ${
+            playerOptions(
+              l.C,
+              p=>
+              p.position!=="D"
+              &&
+              p.position!=="G"
+            )
+          }
+
+          </select>
+
+        </div>
+
+        <div class="slot">
+
+          <label>
+            RW
+          </label>
+
+          <select
+          onchange="setLine('forwards',${i},'RW',this.value)">
+
+          ${
+            playerOptions(
+              l.RW,
+              p=>
+              p.position!=="D"
+              &&
+              p.position!=="G"
+            )
+          }
+
+          </select>
+
+        </div>
+
+      </div>
+      `;
+
+      el.appendChild(card);
+
+    }
+  );
+
+  lines.defense
+  .forEach(
+    (l,i)=>{
+
+      const card=
+      document
+      .createElement("div");
+
+      card.className=
+      "line-card";
+
+      card.innerHTML=`
+
+      <div class="line-card-head">
+
+        <strong>
+          ${l.name}
+        </strong>
+
+      </div>
+
+      <div class="slot-grid d-grid">
+
+        <div class="slot">
+
+          <label>
+            LD
+          </label>
+
+          <select
+          onchange="setLine('defense',${i},'LD',this.value)">
+
+          ${
+            playerOptions(
+              l.LD,
+              p=>p.position==="D"
+            )
+          }
+
+          </select>
+
+        </div>
+
+        <div class="slot">
+
+          <label>
+            RD
+          </label>
+
+          <select
+          onchange="setLine('defense',${i},'RD',this.value)">
+
+          ${
+            playerOptions(
+              l.RD,
+              p=>p.position==="D"
+            )
+          }
+
+          </select>
+
+        </div>
+
+      </div>
+      `;
+
+      el.appendChild(card);
+
+    }
+  );
+
 }
 
-games.forEach(g=>{
+function activeLineClass(ids){
 
-let pm=
-g.stats.reduce(
-(a,s)=>a+s.plusMinus,
-0
-);
-
-let wins=
-g.stats.reduce(
-(a,s)=>a+s.wins,
-0
-);
-
-let losses=
-g.stats.reduce(
-(a,s)=>a+s.losses,
-0
-);
-
-let total=wins+losses;
-
-let row=
-document.createElement("div");
-
-row.className="row";
-
-row.innerHTML=`
-
-<div>
-
-<div class="name">
-vs ${g.opponent}
-</div>
-
-<div class="meta">
-${new Date(g.date).toLocaleDateString()}
-</div>
-
-</div>
-
-<div style="text-align:right">
-
-<div class="pm">
-${signed(pm)}
-</div>
-
-<div class="meta">
-${
-total
-?
-"FO "+
-Math.round(
-wins/total*100
-)+"%"
-:
-"FO —"
-}
-</div>
-
-</div>
-`;
-
-list.appendChild(row);
-
-});
+  return
+  ids.length
+  &&
+  ids.every(
+    id=>onIce.has(id)
+  )
+  ? " active"
+  : "";
 
 }
 
-function render(){
+function renderGame(){
 
-renderRoster();
-renderGame();
-renderSeason();
-renderHistory();
+  document
+  .getElementById("resumeBtn")
+  .classList
+  .toggle(
+    "hidden",
+    !activeGame
+  );
+
+  document
+  .getElementById("gamePanel")
+  .classList
+  .toggle(
+    "hidden",
+    !activeGame
+  );
+
+  if(!activeGame)return;
+
+  document
+  .getElementById("gamePlayerCount")
+  .textContent=
+  activeGame.stats.length;
+
+  document
+  .getElementById("netPM")
+  .textContent=
+  signed(
+    activeGame.stats
+    .reduce(
+      (a,s)=>
+      a+s.plusMinus,
+      0
+    )
+  );
+
+  const w=
+  activeGame.stats
+  .reduce(
+    (a,s)=>a+s.wins,
+    0
+  );
+
+  const l=
+  activeGame.stats
+  .reduce(
+    (a,s)=>a+s.losses,
+    0
+  );
+
+  document
+  .getElementById("teamFO")
+  .textContent=
+  w+l
+  ?
+  `${Math.round(
+    w/(w+l)*100
+  )}%`
+  :
+  "—";
+
+  document
+  .getElementById("selectedCount")
+  .textContent=
+  `${onIce.size} selected`;
+
+  const fbtn=
+  document
+  .getElementById(
+    "forwardLineButtons"
+  );
+
+  fbtn.innerHTML="";
+
+  lines.forwards
+  .forEach(
+    (line,i)=>{
+
+      const ids=
+      ["C","LW","RW"]
+      .map(
+        k=>line[k]
+      )
+      .filter(Boolean);
+
+      const b=
+      document
+      .createElement("button");
+
+      b.className=
+      "line-btn"
+      +
+      activeLineClass(ids);
+
+      b.textContent=
+      line.name;
+
+      b.onclick=
+      ()=>selectForwardLine(i);
+
+      fbtn.appendChild(b);
+
+    }
+  );
+
+  const dbtn=
+  document
+  .getElementById(
+    "defensePairButtons"
+  );
+
+  dbtn.innerHTML="";
+
+  lines.defense
+  .forEach(
+    (line,i)=>{
+
+      const ids=
+      ["LD","RD"]
+      .map(
+        k=>line[k]
+      )
+      .filter(Boolean);
+
+      const b=
+      document
+      .createElement("button");
+
+      b.className=
+      "line-btn"
+      +
+      activeLineClass(ids);
+
+      b.textContent=
+      line.name;
+
+      b.onclick=
+      ()=>selectDefensePair(i);
+
+      dbtn.appendChild(b);
+
+    }
+  );
+
+  const chips=
+  document
+  .getElementById(
+    "selectedChips"
+  );
+
+  chips.innerHTML="";
+
+  [...onIce]
+  .forEach(
+    id=>{
+
+      const p=
+      roster.find(
+        x=>x.id===id
+      );
+
+      if(!p)return;
+
+      const c=
+      document
+      .createElement("span");
+
+      c.className="chip";
+
+      c.textContent=
+      `#${p.number} ${p.name}`;
+
+      chips.appendChild(c);
+
+    }
+  );
+
+  if(!onIce.size){
+
+    chips.innerHTML=
+    `<span class="notice">
+    No players selected.
+    </span>`;
+
+  }
+
+  const list=
+  document
+  .getElementById(
+    "onIcePlayerList"
+  );
+
+  list.innerHTML="";
+
+  activeGame.stats
+  .forEach(
+    s=>{
+
+      const p=
+      roster.find(
+        x=>x.id===s.playerId
+      );
+
+      if(
+        !p
+        ||
+        p.position==="G"
+      )return;
+
+      const r=
+      document
+      .createElement("div");
+
+      r.className=
+      "row"
+      +
+      (
+        onIce.has(p.id)
+        ? " selected"
+        : ""
+      );
+
+      r.innerHTML=`
+
+      <div class="row-left">
+
+        <div class="num">
+          #${p.number}
+        </div>
+
+        <div>
+
+          <div class="name">
+            ${p.name}
+          </div>
+
+          <div class="meta">
+            ${p.position}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="right">
+
+        <div class="pm">
+          ${signed(s.plusMinus)}
+        </div>
+
+        <div class="meta">
+
+          ${
+            onIce.has(p.id)
+            ? "Selected"
+            : "Tap to select"
+          }
+
+        </div>
+
+      </div>
+      `;
+
+      r.onclick=
+      ()=>togglePlayer(p.id);
+
+      list.appendChild(r);
+
+    }
+  );
+
+  const fo=
+  document
+  .getElementById(
+    "faceoffList"
+  );
+
+  fo.innerHTML="";
+
+  const centers=
+  roster.filter(
+    p=>p.position==="C"
+  );
+
+  if(!centers.length){
+
+    fo.innerHTML=
+    `<div class="card notice">
+    No centers on roster.
+    </div>`;
+
+  }
+
+  centers.forEach(
+    p=>{
+
+      const s=
+      stat(p.id);
+
+      if(!s)return;
+
+      const total=
+      s.wins+s.losses;
+
+      const r=
+      document
+      .createElement("div");
+
+      r.className=
+      "row fo-row";
+
+      r.innerHTML=`
+
+      <div class="row-left">
+
+        <div class="num">
+          #${p.number}
+        </div>
+
+        <div>
+
+          <div class="name">
+            ${p.name}
+          </div>
+
+          <div class="meta">
+
+            ${s.wins}-${s.losses}
+
+            ${
+              total
+              ?
+              ` • ${
+                Math.round(
+                  s.wins/total*100
+                )
+              }%`
+              :
+              ""
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="fo-buttons">
+
+          <button class="green">
+            WIN
+          </button>
+
+          <button class="red">
+            LOSS
+          </button>
+
+        </div>
+
+        <button
+        class="ghost smallbtn full"
+        style="margin-top:6px">
+          Undo
+        </button>
+
+      </div>
+      `;
+
+      const bs=
+      r.querySelectorAll(
+        "button"
+      );
+
+      bs[0].onclick=
+      ()=>faceoff(
+        p.id,
+        "win"
+      );
+
+      bs[1].onclick=
+      ()=>faceoff(
+        p.id,
+        "loss"
+      );
+
+      bs[2].onclick=
+      ()=>undoFaceoff(
+        p.id
+      );
+
+      fo.appendChild(r);
+
+    }
+  );
 
 }
 
-render();
+function renderStats(){
+
+  const season=
+  document
+  .getElementById(
+    "seasonList"
+  );
+
+  season.innerHTML="";
+
+  roster.forEach(
+    p=>{
+
+      let pm=0;
+      let w=0;
+      let l=0;
+
+      games.forEach(
+        g=>{
+
+          const s=
+          g.stats.find(
+            x=>x.playerId===p.id
+          );
+
+          if(s){
+
+            pm+=s.plusMinus;
+            w+=s.wins;
+            l+=s.losses;
+
+          }
+
+        }
+      );
+
+      const t=w+l;
+
+      const r=
+      document
+      .createElement("div");
+
+      r.className="row";
+
+      r.innerHTML=`
+
+      <div class="row-left">
+
+        <div class="num">
+          #${p.number}
+        </div>
+
+        <div>
+
+          <div class="name">
+            ${p.name}
+          </div>
+
+          <div class="meta">
+            ${p.position}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="right">
+
+        <div class="pm">
+          ${signed(pm)}
+        </div>
+
+        <div class="meta">
+
+          ${
+            t
+            ?
+            `FO ${w}-${l} • ${
+              Math.round(
+                w/t*100
+              )
+            }%`
+            :
+            "FO —"
+          }
+
+        </div>
+
+      </div>
+      `;
+
+      season.appendChild(r);
+
+    }
+  );
+
+  const hist=
+  document
+  .getElementById(
+    "historyList"
+  );
+
+  hist.innerHTML="";
+
+  if(!games.length){
+
+    hist.innerHTML=
+    `<div class="card notice">
+    No saved games yet.
+    </div>`;
+
+  }
+
+  games.forEach(
+    g=>{
+
+      const w=
+      g.stats
+      .reduce(
+        (a,s)=>a+s.wins,
+        0
+      );
+
+      const l=
+      g.stats
+      .reduce(
+        (a,s)=>a+s.losses,
+        0
+      );
+
+      const t=w+l;
+
+      const c=
+      document
+      .createElement("div");
+
+      c.className=
+      "history-card";
+
+      c.innerHTML=`
+
+      <div class="history-head">
+
+        <div>
+
+          <strong>
+            vs ${g.opponent}
+          </strong>
+
+          <div class="meta">
+            ${
+              new Date(
+                g.date
+              )
+              .toLocaleDateString()
+            }
+          </div>
+
+        </div>
+
+        <div class="right">
+
+          <div class="pm">
+
+            ${
+              signed(
+                g.stats.reduce(
+                  (a,s)=>
+                  a+s.plusMinus,
+                  0
+                )
+              )
+            }
+
+          </div>
+
+          <div class="meta">
+
+            ${
+              t
+              ?
+              `FO ${
+                Math.round(
+                  w/t*100
+                )
+              }%`
+              :
+              "FO —"
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+      `;
+
+      hist.appendChild(c);
+
+    }
+  );
+
+}
+
+function renderAll(){
+
+  renderRoster();
+  renderLines();
+  renderGame();
+  renderStats();
+
+}
+
+renderAll();
 
 </script>
 
