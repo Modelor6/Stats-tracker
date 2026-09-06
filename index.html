@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hockey Tracker</title>
+
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#07101f;
+  color:white;
+  padding-bottom:80px;
+}
+header{
+  padding:22px 16px 10px;
+}
+h1,h2{margin:0}
+small{color:#91a0b5}
+.card{
+  background:#111d30;
+  border-radius:18px;
+  padding:15px;
+  margin:12px;
+}
+input,select{
+  width:100%;
+  box-sizing:border-box;
+  padding:13px;
+  margin:5px 0;
+  border-radius:12px;
+  border:1px solid #293750;
+  background:#0b1525;
+  color:white;
+}
+button{
+  border:0;
+  border-radius:12px;
+  padding:13px;
+  font-weight:700;
+  color:white;
+  background:#2474ed;
+}
+.full{width:100%;margin-top:6px}
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#111d30;
+  border-radius:14px;
+  margin:8px 12px;
+  padding:13px;
+}
+.row.selected{
+  outline:2px solid #2474ed;
+}
+.name{font-weight:800}
+.meta{font-size:12px;color:#91a0b5}
+.pm{font-size:20px;font-weight:900}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.big{
+  min-height:80px;
+  font-size:24px;
+}
+.green{background:#159965}
+.red{background:#cf4550}
+.gray{background:#20304a}
+.hidden{display:none}
+.tabs{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  background:#08111f;
+  padding:8px;
+}
+.tab{
+  background:transparent;
+  color:#7e8da5;
+}
+.tab.active{
+  background:#17253b;
+  color:white;
+}
+.view{display:none}
+.view.active{display:block}
+.topstats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin:12px;
+}
+.stat{
+  background:#111d30;
+  text-align:center;
+  border-radius:14px;
+  padding:10px;
+}
+.stat strong{
+  display:block;
+  font-size:20px;
+}
+.segment{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  margin:12px;
+  padding:4px;
+  background:#0c1626;
+  border-radius:14px;
+}
+.segment button{
+  background:transparent;
+  color:#8d9bb1;
+}
+.segment button.active{
+  background:#1c2b44;
+  color:white;
+}
+.delete{
+  background:#5f2930;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <small>COACH TOOL</small>
+  <h1>🏒 Hockey Tracker</h1>
+</header>
+
+<div id="game" class="view active">
+
+  <div class="card" id="startCard">
+    <h2>Game Day</h2>
+    <p><small>Track +/- and faceoffs from the bench.</small></p>
+
+    <input id="opponent" placeholder="Opponent name">
+
+    <button class="full" onclick="startGame()">Start New Game</button>
+  </div>
+
+  <div id="gamePanel" class="hidden">
+
+    <div class="topstats">
+      <div class="stat">
+        <small>Players</small>
+        <strong id="playersTotal">0</strong>
+      </div>
+
+      <div class="stat">
+        <small>Net +/-</small>
+        <strong id="netPM">0</strong>
+      </div>
+
+      <div class="stat">
+        <small>FO%</small>
+        <strong id="teamFO">—</strong>
+      </div>
+    </div>
+
+    <div class="segment">
+      <button id="playerModeBtn" class="active"
+      onclick="mode('player')">
+      Player Stats
+      </button>
+
+      <button id="iceModeBtn"
+      onclick="mode('ice')">
+      On-Ice +/-
+      </button>
+    </div>
+
+    <div id="playerMode">
+      <div id="gamePlayers"></div>
+
+      <div id="playerControls" class="card hidden">
+
+        <h3 id="selectedName"></h3>
+        <small id="selectedFO"></small>
+
+        <div class="grid">
+
+          <button class="big gray"
+          onclick="playerEvent('plus')">
+          +
+          <br><small>Manual Plus</small>
+          </button>
+
+          <button class="big gray"
+          onclick="playerEvent('minus')">
+          −
+          <br><small>Manual Minus</small>
+          </button>
+
+          <button class="big green"
+          onclick="playerEvent('win')">
+          W
+          <br><small>FO Win</small>
+          </button>
+
+          <button class="big red"
+          onclick="playerEvent('loss')">
+          L
+          <br><small>FO Loss</small>
+          </button>
+
+        </div>
+
+        <button class="full gray"
+        onclick="undoPlayer()">
+        Undo Last Player Event
+        </button>
+
+      </div>
+    </div>
+
+    <div id="iceMode" class="hidden">
+
+      <div class="card">
+        <b>Select players on ice</b>
+        <br>
+        <small id="iceCount">0 selected</small>
+      </div>
+
+      <div id="icePlayers"></div>
+
+      <div class="card">
+
+        <div class="grid">
+
+          <button class="big green"
+          onclick="goal(1,'goalFor')">
+          GOAL FOR
+          <br><small>+1 selected players</small>
+          </button>
+
+          <button class="big red"
+          onclick="goal(-1,'goalAgainst')">
+          GOAL AGAINST
+          <br><small>-1 selected players</small>
+          </button>
+
+        </div>
+
+        <div class="grid" style="margin-top:10px">
+
+          <button class="gray"
+          onclick="clearIce()">
+          Clear Selection
+          </button>
+
+          <button class="gray"
+          onclick="undoGoal()">
+          Undo Goal
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+
+      <button class="full"
+      onclick="saveGame()">
+      Save Game
+      </button>
+
+      <button class="full gray"
+      onclick="endGame()">
+      End Game
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="roster" class="view">
+
+<div class="card">
+
+<h2>Roster</h2>
+
+<input id="number" type="number"
+placeholder="Jersey number">
+
+<input id="name"
+placeholder="Player name">
+
+<select id="position">
+<option>C</option>
+<option>LW</option>
+<option>RW</option>
+<option>D</option>
+<option>G</option>
+</select>
+
+<button class="full"
+onclick="addPlayer()">
+Add Player
+</button>
+
+</div>
+
+<div id="rosterList"></div>
+
+</div>
+
+
+<div id="season" class="view">
+
+<div class="card">
+<h2>Season Totals</h2>
+<small>Calculated from saved games.</small>
+</div>
+
+<div id="seasonList"></div>
+
+</div>
+
+
+<div id="history" class="view">
+
+<div class="card">
+<h2>Game History</h2>
+</div>
+
+<div id="historyList"></div>
+
+</div>
+
+
+<div class="tabs">
+
+<button class="tab active"
+onclick="showTab('game',this)">
+Game
+</button>
+
+<button class="tab"
+onclick="showTab('roster',this)">
+Roster
+</button>
+
+<button class="tab"
+onclick="showTab('season',this)">
+Season
+</button>
+
+<button class="tab"
+onclick="showTab('history',this)">
+History
+</button>
+
+</div>
+
+
+<script>
+
+let roster =
+JSON.parse(localStorage.getItem("hockeyRoster") || "[]");
+
+let games =
+JSON.parse(localStorage.getItem("hockeyGames") || "[]");
+
+let currentGame=null;
+
+let selectedPlayer=null;
+
+let onIce=new Set();
+
+function id(){
+return Date.now().toString(36)+
+Math.random().toString(36).slice(2);
+}
+
+function signed(n){
+return n>0 ? "+"+n : n;
+}
+
+function save(){
+localStorage.setItem(
+"hockeyRoster",
+JSON.stringify(roster)
+);
+
+localStorage.setItem(
+"hockeyGames",
+JSON.stringify(games)
+);
+}
+
+function showTab(view,button){
+
+document.querySelectorAll(".view")
+.forEach(v=>v.classList.remove("active"));
+
+document.getElementById(view)
+.classList.add("active");
+
+document.querySelectorAll(".tab")
+.forEach(b=>b.classList.remove("active"));
+
+button.classList.add("active");
+
+render();
+
+}
+
+function addPlayer(){
+
+let number=
+document.getElementById("number").value;
+
+let name=
+document.getElementById("name").value.trim();
+
+let position=
+document.getElementById("position").value;
+
+if(!name){
+alert("Enter player name.");
+return;
+}
+
+roster.push({
+id:id(),
+number,
+name,
+position
+});
+
+document.getElementById("number").value="";
+document.getElementById("name").value="";
+
+save();
+render();
+
+}
+
+function deletePlayer(pid){
+
+if(!confirm("Delete this player?"))
+return;
+
+roster=
+roster.filter(p=>p.id!==pid);
+
+save();
+render();
+
+}
+
+function startGame(){
+
+if(roster.length===0){
+
+alert("Add players to your roster first.");
+
+showTab(
+"roster",
+document.querySelectorAll(".tab")[1]
+);
+
+return;
+}
+
+let opponent=
+document.getElementById("opponent").value.trim();
+
+currentGame={
+id:id(),
+opponent:opponent||"Opponent",
+date:new Date().toISOString(),
+
+stats:roster.map(p=>({
+
+playerId:p.id,
+plusMinus:0,
+wins:0,
+losses:0
+
+})),
+
+events:[]
+};
+
+selectedPlayer=null;
+onIce.clear();
+
+renderGame();
+
+}
+
+function stat(pid){
+
+return currentGame.stats
+.find(s=>s.playerId===pid);
+
+}
+
+function mode(type){
+
+document.getElementById("playerMode")
+.classList.toggle(
+"hidden",
+type!=="player"
+);
+
+document.getElementById("iceMode")
+.classList.toggle(
+"hidden",
+type!=="ice"
+);
+
+document.getElementById("playerModeBtn")
+.classList.toggle(
+"active",
+type==="player"
+);
+
+document.getElementById("iceModeBtn")
+.classList.toggle(
+"active",
+type==="ice"
+);
+
+}
+
+function selectPlayer(pid){
+
+selectedPlayer=pid;
+
+renderGame();
+
+}
+
+function toggleIce(pid){
+
+if(onIce.has(pid))
+onIce.delete(pid);
+
+else
+onIce.add(pid);
+
+renderGame();
+
+}
+
+function playerEvent(type){
+
+if(!selectedPlayer)return;
+
+let s=stat(selectedPlayer);
+
+if(type==="plus")
+s.plusMinus++;
+
+if(type==="minus")
+s.plusMinus--;
+
+if(type==="win")
+s.wins++;
+
+if(type==="loss")
+s.losses++;
+
+currentGame.events.push({
+type,
+playerIds:[selectedPlayer]
+});
+
+renderGame();
+
+}
+
+function undoPlayer(){
+
+if(!selectedPlayer)return;
+
+for(
+let i=currentGame.events.length-1;
+i>=0;
+i--
+){
+
+let e=currentGame.events[i];
+
+if(
+e.playerIds.length===1 &&
+e.playerIds[0]===selectedPlayer &&
+!e.type.startsWith("goal")
+){
+
+let s=stat(selectedPlayer);
+
+if(e.type==="plus")
+s.plusMinus--;
+
+if(e.type==="minus")
+s.plusMinus++;
+
+if(e.type==="win")
+s.wins=Math.max(0,s.wins-1);
+
+if(e.type==="loss")
+s.losses=Math.max(0,s.losses-1);
+
+currentGame.events.splice(i,1);
+
+break;
+}
+
+}
+
+renderGame();
+
+}
+
+function goal(amount,type){
+
+if(onIce.size===0){
+
+alert(
+"Select the players who were on the ice."
+);
+
+return;
+}
+
+currentGame.stats.forEach(s=>{
+
+if(onIce.has(s.playerId))
+s.plusMinus+=amount;
+
+});
+
+currentGame.events.push({
+type,
+playerIds:[...onIce]
+});
+
+renderGame();
+
+}
+
+function undoGoal(){
+
+for(
+let i=currentGame.events.length-1;
+i>=0;
+i--
+){
+
+let e=currentGame.events[i];
+
+if(
+e.type==="goalFor" ||
+e.type==="goalAgainst"
+){
+
+let reverse=
+e.type==="goalFor" ? -1 : 1;
+
+currentGame.stats.forEach(s=>{
+
+if(e.playerIds.includes(s.playerId))
+s.plusMinus+=reverse;
+
+});
+
+currentGame.events.splice(i,1);
+
+break;
+}
+
+}
+
+renderGame();
+
+}
+
+function clearIce(){
+
+onIce.clear();
+
+renderGame();
+
+}
+
+function saveGame(){
+
+if(!currentGame)return;
+
+let copy=
+JSON.parse(
+JSON.stringify(currentGame)
+);
+
+let index=
+games.findIndex(
+g=>g.id===copy.id
+);
+
+if(index>=0)
+games[index]=copy;
+
+else
+games.unshift(copy);
+
+save();
+
+alert("Game saved.");
+
+render();
+
+}
+
+function endGame(){
+
+if(!confirm(
+"End current game?"
+))
+return;
+
+currentGame=null;
+selectedPlayer=null;
+onIce.clear();
+
+renderGame();
+
+}
+
+function renderGame(){
+
+let panel=
+document.getElementById("gamePanel");
+
+panel.classList.toggle(
+"hidden",
+!currentGame
+);
+
+if(!currentGame)
+return;
+
+document.getElementById("playersTotal")
+.textContent=
+currentGame.stats.length;
+
+let pm=
+currentGame.stats.reduce(
+(a,s)=>a+s.plusMinus,
+0
+);
+
+document.getElementById("netPM")
+.textContent=signed(pm);
+
+let wins=
+currentGame.stats.reduce(
+(a,s)=>a+s.wins,
+0
+);
+
+let losses=
+currentGame.stats.reduce(
+(a,s)=>a+s.losses,
+0
+);
+
+document.getElementById("teamFO")
+.textContent=
+wins+losses
+?
+Math.round(
+wins/(wins+losses)*100
+)+"%"
+:
+"—";
+
+
+let gameList=
+document.getElementById("gamePlayers");
+
+gameList.innerHTML="";
+
+currentGame.stats.forEach(s=>{
+
+let p=
+roster.find(
+x=>x.id===s.playerId
+);
+
+if(!p)return;
+
+let total=s.wins+s.losses;
+
+let row=
+document.createElement("div");
+
+row.className=
+"row "+
+(selectedPlayer===p.id
+?"selected":"");
+
+row.innerHTML=`
+
+<div>
+<div class="name">
+#${p.number} ${p.name}
+</div>
+
+<div class="meta">
+${p.position}
+</div>
+</div>
+
+<div style="text-align:right">
+
+<div class="pm">
+${signed(s.plusMinus)}
+</div>
+
+<div class="meta">
+${
+total
+?
+`FO ${s.wins}-${s.losses}
+• ${Math.round(
+s.wins/total*100
+)}%`
+:
+"FO —"
+}
+</div>
+
+</div>
+`;
+
+row.onclick=
+()=>selectPlayer(p.id);
+
+gameList.appendChild(row);
+
+});
+
+
+let controls=
+document.getElementById("playerControls");
+
+controls.classList.toggle(
+"hidden",
+!selectedPlayer
+);
+
+if(selectedPlayer){
+
+let p=
+roster.find(
+x=>x.id===selectedPlayer
+);
+
+let s=stat(selectedPlayer);
+
+document.getElementById("selectedName")
+.textContent=
+`#${p.number} ${p.name}`;
+
+document.getElementById("selectedFO")
+.textContent=
+`FO ${s.wins}-${s.losses}`;
+
+}
+
+
+let iceList=
+document.getElementById("icePlayers");
+
+iceList.innerHTML="";
+
+currentGame.stats.forEach(s=>{
+
+let p=
+roster.find(
+x=>x.id===s.playerId
+);
+
+if(!p)return;
+
+let row=
+document.createElement("div");
+
+row.className=
+"row "+
+(onIce.has(p.id)
+?"selected":"");
+
+row.innerHTML=`
+
+<div>
+<div class="name">
+#${p.number} ${p.name}
+</div>
+
+<div class="meta">
+${p.position}
+</div>
+</div>
+
+<div>
+
+<span class="pm">
+${signed(s.plusMinus)}
+</span>
+
+&nbsp;
+
+<span style="font-size:22px">
+${onIce.has(p.id)?"✓":"○"}
+</span>
+
+</div>
+`;
+
+row.onclick=
+()=>toggleIce(p.id);
+
+iceList.appendChild(row);
+
+});
+
+document.getElementById("iceCount")
+.textContent=
+onIce.size+" selected";
+
+}
+
+function renderRoster(){
+
+let list=
+document.getElementById("rosterList");
+
+list.innerHTML="";
+
+if(roster.length===0){
+
+list.innerHTML=
+'<div class="card"><small>No players yet.</small></div>';
+
+return;
+}
+
+roster.forEach(p=>{
+
+let row=
+document.createElement("div");
+
+row.className="row";
+
+row.innerHTML=`
+
+<div>
+
+<div class="name">
+#${p.number} ${p.name}
+</div>
+
+<div class="meta">
+${p.position}
+</div>
+
+</div>
+
+<button class="delete">
+Delete
+</button>
+`;
+
+row.querySelector("button")
+.onclick=
+()=>deletePlayer(p.id);
+
+list.appendChild(row);
+
+});
+
+}
+
+function renderSeason(){
+
+let list=
+document.getElementById("seasonList");
+
+list.innerHTML="";
+
+roster.forEach(p=>{
+
+let pm=0;
+let wins=0;
+let losses=0;
+
+games.forEach(g=>{
+
+let s=
+g.stats.find(
+x=>x.playerId===p.id
+);
+
+if(!s)return;
+
+pm+=s.plusMinus;
+wins+=s.wins;
+losses+=s.losses;
+
+});
+
+let total=wins+losses;
+
+let row=
+document.createElement("div");
+
+row.className="row";
+
+row.innerHTML=`
+
+<div>
+
+<div class="name">
+#${p.number} ${p.name}
+</div>
+
+<div class="meta">
+${p.position}
+</div>
+
+</div>
+
+<div style="text-align:right">
+
+<div class="pm">
+${signed(pm)}
+</div>
+
+<div class="meta">
+${
+total
+?
+`FO ${wins}-${losses}
+• ${Math.round(
+wins/total*100
+)}%`
+:
+"FO —"
+}
+</div>
+
+</div>
+`;
+
+list.appendChild(row);
+
+});
+
+}
+
+function renderHistory(){
+
+let list=
+document.getElementById("historyList");
+
+list.innerHTML="";
+
+if(games.length===0){
+
+list.innerHTML=
+'<div class="card"><small>No saved games yet.</small></div>';
+
+return;
+}
+
+games.forEach(g=>{
+
+let pm=
+g.stats.reduce(
+(a,s)=>a+s.plusMinus,
+0
+);
+
+let wins=
+g.stats.reduce(
+(a,s)=>a+s.wins,
+0
+);
+
+let losses=
+g.stats.reduce(
+(a,s)=>a+s.losses,
+0
+);
+
+let total=wins+losses;
+
+let row=
+document.createElement("div");
+
+row.className="row";
+
+row.innerHTML=`
+
+<div>
+
+<div class="name">
+vs ${g.opponent}
+</div>
+
+<div class="meta">
+${new Date(g.date).toLocaleDateString()}
+</div>
+
+</div>
+
+<div style="text-align:right">
+
+<div class="pm">
+${signed(pm)}
+</div>
+
+<div class="meta">
+${
+total
+?
+"FO "+
+Math.round(
+wins/total*100
+)+"%"
+:
+"FO —"
+}
+</div>
+
+</div>
+`;
+
+list.appendChild(row);
+
+});
+
+}
+
+function render(){
+
+renderRoster();
+renderGame();
+renderSeason();
+renderHistory();
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
