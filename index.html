@@ -14,7 +14,7 @@
   --panel:#101c2f;
   --panel2:#16243a;
   --line:#24344f;
-  --text:#fff;
+  --text:#ffffff;
   --muted:#8ea0b8;
   --blue:#2c7df6;
   --green:#18a66f;
@@ -51,13 +51,8 @@ h1,h2,h3{
   margin-bottom:5px;
 }
 
-.view{
-  display:none;
-}
-
-.view.active{
-  display:block;
-}
+.view{display:none}
+.view.active{display:block}
 
 .card{
   background:rgba(16,28,47,.96);
@@ -99,25 +94,11 @@ button{
   font-size:15px;
 }
 
-button:disabled{
-  opacity:.35;
-}
-
-.full{
-  width:100%;
-}
-
-.ghost{
-  background:#1d2b43;
-}
-
-.green{
-  background:var(--green);
-}
-
-.red{
-  background:var(--red);
-}
+.full{width:100%}
+.ghost{background:#1d2b43}
+.green{background:var(--green)}
+.red{background:var(--red)}
+.delete{background:#5b2931}
 
 .row{
   display:flex;
@@ -272,6 +253,67 @@ button:disabled{
   font-size:13px;
 }
 
+.line-card{
+  background:var(--panel);
+  border-radius:18px;
+  margin:10px 12px;
+  padding:14px;
+}
+
+.line-card-head{
+  margin-bottom:10px;
+}
+
+.slot-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.d-grid{
+  grid-template-columns:repeat(2,1fr);
+}
+
+.slot{
+  background:#0c1626;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:10px;
+}
+
+.slot label{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.slot select{
+  margin:0;
+  padding:10px;
+  font-size:13px;
+}
+
+.notice{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.history-card{
+  background:var(--panel);
+  border-radius:16px;
+  margin:8px 12px;
+  padding:13px;
+}
+
+.history-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
 .tabs{
   position:fixed;
   left:0;
@@ -298,74 +340,6 @@ button:disabled{
 .hidden{
   display:none!important;
 }
-
-.line-card{
-  background:var(--panel);
-  border-radius:18px;
-  margin:10px 12px;
-  padding:14px;
-}
-
-.line-card-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
-
-.slot-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-
-.slot{
-  background:#0c1626;
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:10px;
-}
-
-.slot label{
-  display:block;
-  font-size:10px;
-  color:var(--muted);
-  font-weight:800;
-  margin-bottom:5px;
-}
-
-.slot select{
-  margin:0;
-  padding:10px;
-  font-size:13px;
-}
-
-.d-grid{
-  grid-template-columns:repeat(2,1fr);
-}
-
-.delete{
-  background:#5b2931;
-}
-
-.notice{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.4;
-}
-
-.history-card{
-  background:var(--panel);
-  border-radius:16px;
-  margin:8px 12px;
-  padding:13px;
-}
-
-.history-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
 </style>
 </head>
 
@@ -384,15 +358,9 @@ button:disabled{
 
     <input id="opponentInput" placeholder="Opponent name">
 
-    <button class="full" onclick="startGame()">
-      Start New Game
-    </button>
+    <button class="full" onclick="startGame()">Start New Game</button>
 
-    <button
-      id="resumeBtn"
-      class="full ghost hidden"
-      style="margin-top:8px"
-      onclick="resumeGame()">
+    <button id="resumeBtn" class="full ghost hidden" style="margin-top:8px" onclick="resumeGame()">
       Resume Active Game
     </button>
   </div>
@@ -400,7 +368,6 @@ button:disabled{
   <div id="gamePanel" class="hidden">
 
     <div class="topstats">
-
       <div class="stat">
         <small>Players</small>
         <strong id="gamePlayerCount">0</strong>
@@ -415,7 +382,6 @@ button:disabled{
         <small>FO%</small>
         <strong id="teamFO">—</strong>
       </div>
-
     </div>
 
     <div class="section-title">
@@ -423,170 +389,76 @@ button:disabled{
         <div class="eyebrow">QUICK SELECT</div>
         <h2>Lines</h2>
       </div>
-
-      <small id="selectedCount">
-        0 selected
-      </small>
+      <small id="selectedCount">0 selected</small>
     </div>
 
     <div class="card">
+      <div class="eyebrow">FORWARDS</div>
+      <div id="forwardLineButtons" class="quick-grid"></div>
 
-      <div class="eyebrow">
-        FORWARDS
-      </div>
-
-      <div
-        id="forwardLineButtons"
-        class="quick-grid">
-      </div>
-
-      <div
-        class="eyebrow"
-        style="margin-top:14px">
-        DEFENSE
-      </div>
-
-      <div
-        id="defensePairButtons"
-        class="quick-grid three">
-      </div>
-
+      <div class="eyebrow" style="margin-top:14px">DEFENSE</div>
+      <div id="defensePairButtons" class="quick-grid three"></div>
     </div>
 
     <div class="selected-box">
-
-      <strong>
-        Players on ice
-      </strong>
-
-      <div
-        id="selectedChips"
-        class="chips">
-      </div>
-
+      <strong>Players on ice</strong>
+      <div id="selectedChips" class="chips"></div>
     </div>
 
     <div class="section-title">
-
       <div>
-        <div class="eyebrow">
-          MANUAL ADJUST
-        </div>
-
-        <h2>
-          On-Ice Players
-        </h2>
+        <div class="eyebrow">MANUAL ADJUST</div>
+        <h2>On-Ice Players</h2>
       </div>
-
-      <small>
-        Tap to add/remove
-      </small>
-
+      <small>Tap to add/remove</small>
     </div>
 
     <div id="onIcePlayerList"></div>
 
     <div class="card">
-
       <div class="big-actions">
-
-        <button
-          class="green"
-          onclick="applyGoal(1,'goalFor')">
-
-          <span class="huge">
-            GOAL FOR
-          </span>
-
+        <button class="green" onclick="applyGoal(1,'goalFor')">
+          <span class="huge">GOAL FOR</span>
           +1 selected
         </button>
 
-        <button
-          class="red"
-          onclick="applyGoal(-1,'goalAgainst')">
-
-          <span class="huge">
-            GOAL AGAINST
-          </span>
-
+        <button class="red" onclick="applyGoal(-1,'goalAgainst')">
+          <span class="huge">GOAL AGAINST</span>
           -1 selected
         </button>
-
       </div>
 
-      <div
-        class="quick-grid"
-        style="margin-top:9px">
-
-        <button
-          class="ghost"
-          onclick="undoGoal()">
-          Undo Last Goal
-        </button>
-
-        <button
-          class="ghost"
-          onclick="clearOnIce()">
-          Clear Selection
-        </button>
-
+      <div class="quick-grid" style="margin-top:9px">
+        <button class="ghost" onclick="undoGoal()">Undo Last Goal</button>
+        <button class="ghost" onclick="clearOnIce()">Clear Selection</button>
       </div>
-
     </div>
 
     <div class="section-title">
-
       <div>
-        <div class="eyebrow">
-          FACE-OFFS
-        </div>
-
-        <h2>
-          Centers
-        </h2>
+        <div class="eyebrow">FACE-OFFS</div>
+        <h2>Centers</h2>
       </div>
-
-      <small>
-        One-tap tracking
-      </small>
-
+      <small>One-tap tracking</small>
     </div>
 
     <div id="faceoffList"></div>
 
     <div class="card">
-
-      <button
-        class="full"
-        onclick="saveGame()">
-        Save Game to History
-      </button>
-
-      <button
-        class="full ghost"
-        style="margin-top:8px"
-        onclick="endGame()">
-        End Active Game
-      </button>
-
+      <button class="full" onclick="saveGame()">Save Game to History</button>
+      <button class="full ghost" style="margin-top:8px" onclick="endGame()">End Active Game</button>
     </div>
 
   </div>
-
 </section>
 
 <section id="linesView" class="view">
 
   <div class="card">
-
-    <h2>
-      Lines & D Pairs
-    </h2>
-
+    <h2>Lines & D Pairs</h2>
     <p class="notice">
       Set these once. During a game, tap a forward line and a D pair to instantly select those 5 skaters.
     </p>
-
   </div>
 
   <div id="linesEditor"></div>
@@ -596,19 +468,11 @@ button:disabled{
 <section id="rosterView" class="view">
 
   <div class="card">
+    <h2>Roster</h2>
 
-    <h2>
-      Roster
-    </h2>
+    <input id="playerNumber" inputmode="numeric" placeholder="Jersey #">
 
-    <input
-      id="playerNumber"
-      inputmode="numeric"
-      placeholder="Jersey #">
-
-    <input
-      id="playerName"
-      placeholder="Player name">
+    <input id="playerName" placeholder="Player name">
 
     <select id="playerPosition">
       <option>C</option>
@@ -618,12 +482,7 @@ button:disabled{
       <option>G</option>
     </select>
 
-    <button
-      class="full"
-      onclick="addPlayer()">
-      Add Player
-    </button>
-
+    <button class="full" onclick="addPlayer()">Add Player</button>
   </div>
 
   <div id="rosterList"></div>
@@ -633,23 +492,14 @@ button:disabled{
 <section id="statsView" class="view">
 
   <div class="card">
-
-    <h2>
-      Season Stats
-    </h2>
-
-    <p class="notice">
-      Totals are calculated from saved games.
-    </p>
-
+    <h2>Season Stats</h2>
+    <p class="notice">Totals are calculated from saved games.</p>
   </div>
 
   <div id="seasonList"></div>
 
   <div class="section-title">
-    <h2>
-      Game History
-    </h2>
+    <h2>Game History</h2>
   </div>
 
   <div id="historyList"></div>
@@ -657,1679 +507,715 @@ button:disabled{
 </section>
 
 <nav class="tabs">
-
-  <button
-    class="tab active"
-    onclick="showTab('gameView',this)">
-    Game
-  </button>
-
-  <button
-    class="tab"
-    onclick="showTab('linesView',this)">
-    Lines
-  </button>
-
-  <button
-    class="tab"
-    onclick="showTab('rosterView',this)">
-    Roster
-  </button>
-
-  <button
-    class="tab"
-    onclick="showTab('statsView',this)">
-    Stats
-  </button>
-
+  <button class="tab active" onclick="showTab('gameView',this)">Game</button>
+  <button class="tab" onclick="showTab('linesView',this)">Lines</button>
+  <button class="tab" onclick="showTab('rosterView',this)">Roster</button>
+  <button class="tab" onclick="showTab('statsView',this)">Stats</button>
 </nav>
 
 <script>
-
-const LS={
-  roster:"ht_roster_v3",
-  games:"ht_games_v3",
-  lines:"ht_lines_v3",
-  active:"ht_active_v3"
+const LS = {
+  roster: "ht_roster_v4",
+  games: "ht_games_v4",
+  lines: "ht_lines_v4",
+  active: "ht_active_v4"
 };
 
-let roster=
-JSON.parse(
-  localStorage.getItem(LS.roster)
-  || "[]"
-);
-
-let games=
-JSON.parse(
-  localStorage.getItem(LS.games)
-  || "[]"
-);
-
-let lines=
-JSON.parse(
-  localStorage.getItem(LS.lines)
-  || "null"
-)
-|| defaultLines();
-
-let activeGame=
-JSON.parse(
-  localStorage.getItem(LS.active)
-  || "null"
-);
-
-let onIce=
-new Set(
-  activeGame?.onIce || []
-);
+let roster = JSON.parse(localStorage.getItem(LS.roster) || "[]");
+let games = JSON.parse(localStorage.getItem(LS.games) || "[]");
+let lines = JSON.parse(localStorage.getItem(LS.lines) || "null") || defaultLines();
+let activeGame = JSON.parse(localStorage.getItem(LS.active) || "null");
+let onIce = new Set(activeGame?.onIce || []);
 
 function uid(){
-
-  return Date.now().toString(36)
-  +
-  Math.random().toString(36).slice(2);
-
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
 
 function signed(n){
-
-  return n>0
-  ? `+${n}`
-  : `${n}`;
-
+  return n > 0 ? `+${n}` : `${n}`;
 }
 
 function defaultLines(){
-
-  return{
-
-    forwards:[
-
-      {
-        name:"Line 1",
-        C:"",
-        LW:"",
-        RW:""
-      },
-
-      {
-        name:"Line 2",
-        C:"",
-        LW:"",
-        RW:""
-      },
-
-      {
-        name:"Line 3",
-        C:"",
-        LW:"",
-        RW:""
-      },
-
-      {
-        name:"Line 4",
-        C:"",
-        LW:"",
-        RW:""
-      }
-
+  return {
+    forwards: [
+      {name:"Line 1", LW:"", C:"", RW:""},
+      {name:"Line 2", LW:"", C:"", RW:""},
+      {name:"Line 3", LW:"", C:"", RW:""},
+      {name:"Line 4", LW:"", C:"", RW:""}
     ],
-
-    defense:[
-
-      {
-        name:"D Pair 1",
-        LD:"",
-        RD:""
-      },
-
-      {
-        name:"D Pair 2",
-        LD:"",
-        RD:""
-      },
-
-      {
-        name:"D Pair 3",
-        LD:"",
-        RD:""
-      }
-
+    defense: [
+      {name:"D Pair 1", LD:"", RD:""},
+      {name:"D Pair 2", LD:"", RD:""},
+      {name:"D Pair 3", LD:"", RD:""}
     ]
-
   };
-
 }
 
 function persist(){
-
-  localStorage.setItem(
-    LS.roster,
-    JSON.stringify(roster)
-  );
-
-  localStorage.setItem(
-    LS.games,
-    JSON.stringify(games)
-  );
-
-  localStorage.setItem(
-    LS.lines,
-    JSON.stringify(lines)
-  );
+  localStorage.setItem(LS.roster, JSON.stringify(roster));
+  localStorage.setItem(LS.games, JSON.stringify(games));
+  localStorage.setItem(LS.lines, JSON.stringify(lines));
 
   if(activeGame){
-
-    activeGame.onIce=
-    [...onIce];
-
-    localStorage.setItem(
-      LS.active,
-      JSON.stringify(activeGame)
-    );
-
-  }else{
-
-    localStorage.removeItem(
-      LS.active
-    );
-
+    activeGame.onIce = [...onIce];
+    localStorage.setItem(LS.active, JSON.stringify(activeGame));
+  } else {
+    localStorage.removeItem(LS.active);
   }
-
 }
 
-function showTab(id,btn){
+function showTab(id, btn){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
 
-  document
-  .querySelectorAll(".view")
-  .forEach(
-    v=>v.classList.remove("active")
-  );
-
-  document
-  .querySelectorAll(".tab")
-  .forEach(
-    b=>b.classList.remove("active")
-  );
-
-  document
-  .getElementById(id)
-  .classList.add("active");
-
+  document.getElementById(id).classList.add("active");
   btn.classList.add("active");
 
   renderAll();
-
 }
 
 function addPlayer(){
-
-  const number=
-  document
-  .getElementById("playerNumber")
-  .value
-  .trim();
-
-  const name=
-  document
-  .getElementById("playerName")
-  .value
-  .trim();
-
-  const position=
-  document
-  .getElementById("playerPosition")
-  .value;
+  const number = document.getElementById("playerNumber").value.trim();
+  const name = document.getElementById("playerName").value.trim();
+  const position = document.getElementById("playerPosition").value;
 
   if(!name){
-
-    return alert(
-      "Enter a player name."
-    );
-
+    alert("Enter a player name.");
+    return;
   }
 
   roster.push({
-
-    id:uid(),
+    id: uid(),
     number,
     name,
     position
-
   });
 
-  roster.sort(
-    (a,b)=>
-    (parseInt(a.number)||9999)
-    -
-    (parseInt(b.number)||9999)
-  );
+  roster.sort((a,b) => (parseInt(a.number)||9999) - (parseInt(b.number)||9999));
 
-  document
-  .getElementById("playerNumber")
-  .value="";
-
-  document
-  .getElementById("playerName")
-  .value="";
+  document.getElementById("playerNumber").value = "";
+  document.getElementById("playerName").value = "";
 
   persist();
   renderAll();
-
 }
 
 function deletePlayer(id){
+  if(!confirm("Delete this player?")) return;
 
-  if(
-    !confirm(
-      "Delete this player?"
-    )
-  )return;
+  roster = roster.filter(p => p.id !== id);
 
-  roster=
-  roster.filter(
-    p=>p.id!==id
-  );
+  lines.forwards.forEach(line => {
+    ["LW","C","RW"].forEach(key => {
+      if(line[key] === id) line[key] = "";
+    });
+  });
 
-  lines.forwards
-  .forEach(
-    l=>
-    ["C","LW","RW"]
-    .forEach(
-      k=>{
-        if(l[k]===id){
-          l[k]="";
-        }
-      }
-    )
-  );
+  lines.defense.forEach(line => {
+    ["LD","RD"].forEach(key => {
+      if(line[key] === id) line[key] = "";
+    });
+  });
 
-  lines.defense
-  .forEach(
-    l=>
-    ["LD","RD"]
-    .forEach(
-      k=>{
-        if(l[k]===id){
-          l[k]="";
-        }
-      }
-    )
-  );
-
-  games.forEach(
-    g=>
-    g.stats=
-    g.stats.filter(
-      s=>s.playerId!==id
-    )
-  );
+  games.forEach(g => {
+    g.stats = g.stats.filter(s => s.playerId !== id);
+  });
 
   if(activeGame){
-
-    activeGame.stats=
-    activeGame.stats.filter(
-      s=>s.playerId!==id
-    );
-
+    activeGame.stats = activeGame.stats.filter(s => s.playerId !== id);
   }
 
   onIce.delete(id);
 
   persist();
   renderAll();
-
 }
 
 function startGame(){
-
   if(!roster.length){
-
-    return alert(
-      "Add your roster first."
-    );
-
+    alert("Add your roster first.");
+    return;
   }
 
-  activeGame={
-
-    id:uid(),
-
-    opponent:
-    document
-    .getElementById("opponentInput")
-    .value
-    .trim()
-    ||
-    "Opponent",
-
-    date:
-    new Date().toISOString(),
-
-    stats:
-    roster.map(
-      p=>({
-
-        playerId:p.id,
-        plusMinus:0,
-        wins:0,
-        losses:0
-
-      })
-    ),
-
-    events:[],
-
-    onIce:[]
-
+  activeGame = {
+    id: uid(),
+    opponent: document.getElementById("opponentInput").value.trim() || "Opponent",
+    date: new Date().toISOString(),
+    stats: roster.map(p => ({
+      playerId: p.id,
+      plusMinus: 0,
+      wins: 0,
+      losses: 0
+    })),
+    events: [],
+    onIce: []
   };
 
   onIce.clear();
 
   persist();
   renderAll();
-
 }
 
 function resumeGame(){
-
   if(activeGame){
-
-    onIce=
-    new Set(
-      activeGame.onIce || []
-    );
-
+    onIce = new Set(activeGame.onIce || []);
     renderAll();
-
   }
-
 }
 
 function stat(id){
-
-  return activeGame
-  ?.stats
-  .find(
-    s=>s.playerId===id
-  );
-
+  return activeGame?.stats.find(s => s.playerId === id);
 }
 
 function togglePlayer(id){
-
   if(onIce.has(id)){
-
     onIce.delete(id);
-
-  }else{
-
+  } else {
     onIce.add(id);
-
   }
 
   persist();
   renderGame();
-
 }
 
 function clearOnIce(){
-
   onIce.clear();
+  persist();
+  renderGame();
+}
+
+function selectForwardLine(index){
+  const line = lines.forwards[index];
+  const ids = [line.LW, line.C, line.RW].filter(Boolean);
+
+  const defenseAlreadySelected = roster
+    .filter(p => p.position === "D" && onIce.has(p.id))
+    .map(p => p.id);
+
+  onIce = new Set([...defenseAlreadySelected, ...ids]);
 
   persist();
   renderGame();
-
 }
 
-function selectForwardLine(i){
+function selectDefensePair(index){
+  const pair = lines.defense[index];
+  const ids = [pair.LD, pair.RD].filter(Boolean);
 
-  const ids=
-  ["C","LW","RW"]
-  .map(
-    k=>lines.forwards[i][k]
-  )
-  .filter(Boolean);
+  const forwardsAlreadySelected = roster
+    .filter(p => p.position !== "D" && p.position !== "G" && onIce.has(p.id))
+    .map(p => p.id);
 
-  const defenseIds=
-  new Set(
-
-    roster
-    .filter(
-      p=>
-      p.position==="D"
-      &&
-      onIce.has(p.id)
-    )
-    .map(
-      p=>p.id
-    )
-
-  );
-
-  onIce=
-  new Set([
-    ...defenseIds,
-    ...ids
-  ]);
+  onIce = new Set([...forwardsAlreadySelected, ...ids]);
 
   persist();
   renderGame();
-
 }
 
-function selectDefensePair(i){
-
-  const ids=
-  ["LD","RD"]
-  .map(
-    k=>lines.defense[i][k]
-  )
-  .filter(Boolean);
-
-  const forwardIds=
-  new Set(
-
-    roster
-    .filter(
-      p=>
-      p.position!=="D"
-      &&
-      p.position!=="G"
-      &&
-      onIce.has(p.id)
-    )
-    .map(
-      p=>p.id
-    )
-
-  );
-
-  onIce=
-  new Set([
-    ...forwardIds,
-    ...ids
-  ]);
-
-  persist();
-  renderGame();
-
-}
-
-function applyGoal(
-  delta,
-  type
-){
-
-  if(!activeGame)return;
+function applyGoal(delta, type){
+  if(!activeGame) return;
 
   if(!onIce.size){
-
-    return alert(
-      "Select the players who were on the ice."
-    );
-
+    alert("Select the players who were on the ice.");
+    return;
   }
 
-  activeGame.stats
-  .forEach(
-    s=>{
-
-      if(
-        onIce.has(
-          s.playerId
-        )
-      ){
-
-        s.plusMinus+=delta;
-
-      }
-
+  activeGame.stats.forEach(s => {
+    if(onIce.has(s.playerId)){
+      s.plusMinus += delta;
     }
-  );
+  });
 
   activeGame.events.push({
-
-    id:uid(),
+    id: uid(),
     type,
-    playerIds:[...onIce]
-
+    playerIds: [...onIce]
   });
 
   persist();
   renderGame();
-
 }
 
 function undoGoal(){
+  if(!activeGame) return;
 
-  if(!activeGame)return;
+  for(let i = activeGame.events.length - 1; i >= 0; i--){
+    const e = activeGame.events[i];
 
-  for(
-    let i=
-    activeGame.events.length-1;
-    i>=0;
-    i--
-  ){
+    if(e.type === "goalFor" || e.type === "goalAgainst"){
+      const reverse = e.type === "goalFor" ? -1 : 1;
 
-    const e=
-    activeGame.events[i];
-
-    if(
-      e.type==="goalFor"
-      ||
-      e.type==="goalAgainst"
-    ){
-
-      const reverse=
-      e.type==="goalFor"
-      ? -1
-      : 1;
-
-      activeGame.stats
-      .forEach(
-        s=>{
-
-          if(
-            e.playerIds
-            .includes(
-              s.playerId
-            )
-          ){
-
-            s.plusMinus+=reverse;
-
-          }
-
+      activeGame.stats.forEach(s => {
+        if(e.playerIds.includes(s.playerId)){
+          s.plusMinus += reverse;
         }
-      );
+      });
 
-      activeGame.events
-      .splice(i,1);
-
+      activeGame.events.splice(i,1);
       break;
-
     }
-
   }
 
   persist();
   renderGame();
-
 }
 
-function faceoff(
-  id,
-  result
-){
+function faceoff(id, result){
+  if(!activeGame) return;
 
-  if(!activeGame)return;
+  const s = stat(id);
+  if(!s) return;
 
-  const s=
-  stat(id);
-
-  if(!s)return;
-
-  if(result==="win"){
-
+  if(result === "win"){
     s.wins++;
-
-  }else{
-
+  } else {
     s.losses++;
-
   }
 
   activeGame.events.push({
-
-    id:uid(),
-
-    type:
-    result==="win"
-    ? "faceoffWin"
-    : "faceoffLoss",
-
-    playerIds:[id]
-
+    id: uid(),
+    type: result === "win" ? "faceoffWin" : "faceoffLoss",
+    playerIds: [id]
   });
 
   persist();
   renderGame();
-
 }
 
 function undoFaceoff(id){
+  if(!activeGame) return;
 
-  if(!activeGame)return;
-
-  for(
-    let i=
-    activeGame.events.length-1;
-    i>=0;
-    i--
-  ){
-
-    const e=
-    activeGame.events[i];
+  for(let i = activeGame.events.length - 1; i >= 0; i--){
+    const e = activeGame.events[i];
 
     if(
-      e.playerIds?.length===1
-      &&
-      e.playerIds[0]===id
-      &&
-      (
-        e.type==="faceoffWin"
-        ||
-        e.type==="faceoffLoss"
-      )
+      e.playerIds?.length === 1 &&
+      e.playerIds[0] === id &&
+      (e.type === "faceoffWin" || e.type === "faceoffLoss")
     ){
+      const s = stat(id);
 
-      const s=
-      stat(id);
-
-      if(
-        e.type==="faceoffWin"
-      ){
-
-        s.wins=
-        Math.max(
-          0,
-          s.wins-1
-        );
-
-      }else{
-
-        s.losses=
-        Math.max(
-          0,
-          s.losses-1
-        );
-
+      if(e.type === "faceoffWin"){
+        s.wins = Math.max(0, s.wins - 1);
+      } else {
+        s.losses = Math.max(0, s.losses - 1);
       }
 
-      activeGame.events
-      .splice(i,1);
-
+      activeGame.events.splice(i,1);
       break;
-
     }
-
   }
 
   persist();
   renderGame();
-
 }
 
 function saveGame(){
+  if(!activeGame) return;
 
-  if(!activeGame)return;
+  const copy = JSON.parse(JSON.stringify(activeGame));
+  const idx = games.findIndex(g => g.id === copy.id);
 
-  const copy=
-  JSON.parse(
-    JSON.stringify(
-      activeGame
-    )
-  );
-
-  const idx=
-  games.findIndex(
-    g=>g.id===copy.id
-  );
-
-  if(idx>=0){
-
-    games[idx]=copy;
-
-  }else{
-
+  if(idx >= 0){
+    games[idx] = copy;
+  } else {
     games.unshift(copy);
-
   }
 
   persist();
   renderAll();
 
-  alert(
-    "Game saved."
-  );
-
+  alert("Game saved.");
 }
 
 function endGame(){
+  if(!activeGame) return;
 
-  if(!activeGame)return;
+  if(!confirm("End the active game? Your latest taps are already autosaved.")){
+    return;
+  }
 
-  if(
-    !confirm(
-      "End the active game? Your latest taps are already autosaved."
-    )
-  )return;
-
-  activeGame=null;
-
+  activeGame = null;
   onIce.clear();
 
   persist();
   renderAll();
-
 }
 
-function setLine(
-  type,
-  index,
-  key,
-  val
-){
-
-  lines[type][index][key]=val;
-
+function setLine(type, index, key, value){
+  lines[type][index][key] = value;
   persist();
   renderAll();
-
 }
 
-function playerOptions(
-  selected,
-  filter
-){
+function playerOptions(selected, filter){
+  const list = roster.filter(filter);
 
-  const list=
-  roster.filter(filter);
+  return `<option value="">Select player</option>` +
+    list.map(p =>
+      `<option value="${p.id}" ${p.id === selected ? "selected" : ""}>
+        #${p.number} ${p.name}
+      </option>`
+    ).join("");
+}
 
-  return
-  `<option value="">—</option>`
-  +
-  list.map(
-    p=>
-    `<option value="${p.id}" ${
-      p.id===selected
-      ? "selected"
-      : ""
-    }>
-    #${p.number} ${p.name}
-    </option>`
-  )
-  .join("");
-
+function activeLineClass(ids){
+  return ids.length && ids.every(id => onIce.has(id))
+    ? " active"
+    : "";
 }
 
 function renderRoster(){
-
-  const el=
-  document
-  .getElementById("rosterList");
-
-  el.innerHTML="";
+  const el = document.getElementById("rosterList");
+  el.innerHTML = "";
 
   if(!roster.length){
-
-    el.innerHTML=
-    `<div class="card notice">
-    No players yet.
-    </div>`;
-
+    el.innerHTML = `<div class="card notice">No players yet.</div>`;
     return;
-
   }
 
-  roster.forEach(
-    p=>{
+  roster.forEach(p => {
+    const row = document.createElement("div");
+    row.className = "row";
 
-      const row=
-      document
-      .createElement("div");
-
-      row.className="row";
-
-      row.innerHTML=`
-
+    row.innerHTML = `
       <div class="row-left">
-
-        <div class="num">
-          #${p.number}
-        </div>
-
+        <div class="num">#${p.number}</div>
         <div>
-
-          <div class="name">
-            ${p.name}
-          </div>
-
-          <div class="meta">
-            ${p.position}
-          </div>
-
+          <div class="name">${p.name}</div>
+          <div class="meta">${p.position}</div>
         </div>
-
       </div>
 
-      <button class="delete smallbtn">
-        Delete
-      </button>
-      `;
+      <button class="delete smallbtn">Delete</button>
+    `;
 
-      row
-      .querySelector("button")
-      .onclick=
-      ()=>deletePlayer(p.id);
+    row.querySelector("button").onclick = () => deletePlayer(p.id);
 
-      el.appendChild(row);
-
-    }
-  );
-
+    el.appendChild(row);
+  });
 }
 
 function renderLines(){
+  const el = document.getElementById("linesEditor");
+  el.innerHTML = "";
 
-  const el=
-  document
-  .getElementById("linesEditor");
+  lines.forwards.forEach((line, i) => {
+    const card = document.createElement("div");
+    card.className = "line-card";
 
-  el.innerHTML="";
-
-  lines.forwards
-  .forEach(
-    (l,i)=>{
-
-      const card=
-      document
-      .createElement("div");
-
-      card.className=
-      "line-card";
-
-      card.innerHTML=`
-
+    card.innerHTML = `
       <div class="line-card-head">
-
-        <strong>
-          ${l.name}
-        </strong>
-
+        <strong>${line.name}</strong>
       </div>
 
       <div class="slot-grid">
 
         <div class="slot">
-
-          <label>
-            LW
-          </label>
-
-          <select
-          onchange="setLine('forwards',${i},'LW',this.value)">
-
-          ${
-            playerOptions(
-              l.LW,
-              p=>
-              p.position!=="D"
-              &&
-              p.position!=="G"
-            )
-          }
-
+          <label>LW</label>
+          <select onchange="setLine('forwards',${i},'LW',this.value)">
+            ${playerOptions(line.LW, p => p.position !== "D" && p.position !== "G")}
           </select>
-
         </div>
 
         <div class="slot">
-
-          <label>
-            C
-          </label>
-
-          <select
-          onchange="setLine('forwards',${i},'C',this.value)">
-
-          ${
-            playerOptions(
-              l.C,
-              p=>
-              p.position!=="D"
-              &&
-              p.position!=="G"
-            )
-          }
-
+          <label>C</label>
+          <select onchange="setLine('forwards',${i},'C',this.value)">
+            ${playerOptions(line.C, p => p.position !== "D" && p.position !== "G")}
           </select>
-
         </div>
 
         <div class="slot">
-
-          <label>
-            RW
-          </label>
-
-          <select
-          onchange="setLine('forwards',${i},'RW',this.value)">
-
-          ${
-            playerOptions(
-              l.RW,
-              p=>
-              p.position!=="D"
-              &&
-              p.position!=="G"
-            )
-          }
-
+          <label>RW</label>
+          <select onchange="setLine('forwards',${i},'RW',this.value)">
+            ${playerOptions(line.RW, p => p.position !== "D" && p.position !== "G")}
           </select>
-
         </div>
 
       </div>
-      `;
+    `;
 
-      el.appendChild(card);
+    el.appendChild(card);
+  });
 
-    }
-  );
+  lines.defense.forEach((pair, i) => {
+    const card = document.createElement("div");
+    card.className = "line-card";
 
-  lines.defense
-  .forEach(
-    (l,i)=>{
-
-      const card=
-      document
-      .createElement("div");
-
-      card.className=
-      "line-card";
-
-      card.innerHTML=`
-
+    card.innerHTML = `
       <div class="line-card-head">
-
-        <strong>
-          ${l.name}
-        </strong>
-
+        <strong>${pair.name}</strong>
       </div>
 
       <div class="slot-grid d-grid">
 
         <div class="slot">
-
-          <label>
-            LD
-          </label>
-
-          <select
-          onchange="setLine('defense',${i},'LD',this.value)">
-
-          ${
-            playerOptions(
-              l.LD,
-              p=>p.position==="D"
-            )
-          }
-
+          <label>LD</label>
+          <select onchange="setLine('defense',${i},'LD',this.value)">
+            ${playerOptions(pair.LD, p => p.position === "D")}
           </select>
-
         </div>
 
         <div class="slot">
-
-          <label>
-            RD
-          </label>
-
-          <select
-          onchange="setLine('defense',${i},'RD',this.value)">
-
-          ${
-            playerOptions(
-              l.RD,
-              p=>p.position==="D"
-            )
-          }
-
+          <label>RD</label>
+          <select onchange="setLine('defense',${i},'RD',this.value)">
+            ${playerOptions(pair.RD, p => p.position === "D")}
           </select>
-
         </div>
 
       </div>
-      `;
+    `;
 
-      el.appendChild(card);
-
-    }
-  );
-
-}
-
-function activeLineClass(ids){
-
-  return
-  ids.length
-  &&
-  ids.every(
-    id=>onIce.has(id)
-  )
-  ? " active"
-  : "";
-
+    el.appendChild(card);
+  });
 }
 
 function renderGame(){
+  document.getElementById("resumeBtn").classList.toggle("hidden", !activeGame);
+  document.getElementById("gamePanel").classList.toggle("hidden", !activeGame);
 
-  document
-  .getElementById("resumeBtn")
-  .classList
-  .toggle(
-    "hidden",
-    !activeGame
-  );
+  if(!activeGame) return;
 
-  document
-  .getElementById("gamePanel")
-  .classList
-  .toggle(
-    "hidden",
-    !activeGame
-  );
+  document.getElementById("gamePlayerCount").textContent = activeGame.stats.length;
 
-  if(!activeGame)return;
+  document.getElementById("netPM").textContent =
+    signed(activeGame.stats.reduce((a,s) => a + s.plusMinus, 0));
 
-  document
-  .getElementById("gamePlayerCount")
-  .textContent=
-  activeGame.stats.length;
+  const wins = activeGame.stats.reduce((a,s) => a + s.wins, 0);
+  const losses = activeGame.stats.reduce((a,s) => a + s.losses, 0);
 
-  document
-  .getElementById("netPM")
-  .textContent=
-  signed(
-    activeGame.stats
-    .reduce(
-      (a,s)=>
-      a+s.plusMinus,
-      0
-    )
-  );
+  document.getElementById("teamFO").textContent =
+    wins + losses
+      ? `${Math.round(wins / (wins + losses) * 100)}%`
+      : "—";
 
-  const w=
-  activeGame.stats
-  .reduce(
-    (a,s)=>a+s.wins,
-    0
-  );
+  document.getElementById("selectedCount").textContent = `${onIce.size} selected`;
 
-  const l=
-  activeGame.stats
-  .reduce(
-    (a,s)=>a+s.losses,
-    0
-  );
+  const forwardButtons = document.getElementById("forwardLineButtons");
+  forwardButtons.innerHTML = "";
 
-  document
-  .getElementById("teamFO")
-  .textContent=
-  w+l
-  ?
-  `${Math.round(
-    w/(w+l)*100
-  )}%`
-  :
-  "—";
+  lines.forwards.forEach((line, i) => {
+    const ids = [line.LW, line.C, line.RW].filter(Boolean);
 
-  document
-  .getElementById("selectedCount")
-  .textContent=
-  `${onIce.size} selected`;
+    const btn = document.createElement("button");
+    btn.className = "line-btn" + activeLineClass(ids);
+    btn.textContent = line.name;
+    btn.onclick = () => selectForwardLine(i);
 
-  const fbtn=
-  document
-  .getElementById(
-    "forwardLineButtons"
-  );
+    forwardButtons.appendChild(btn);
+  });
 
-  fbtn.innerHTML="";
+  const defenseButtons = document.getElementById("defensePairButtons");
+  defenseButtons.innerHTML = "";
 
-  lines.forwards
-  .forEach(
-    (line,i)=>{
+  lines.defense.forEach((pair, i) => {
+    const ids = [pair.LD, pair.RD].filter(Boolean);
 
-      const ids=
-      ["C","LW","RW"]
-      .map(
-        k=>line[k]
-      )
-      .filter(Boolean);
+    const btn = document.createElement("button");
+    btn.className = "line-btn" + activeLineClass(ids);
+    btn.textContent = pair.name;
+    btn.onclick = () => selectDefensePair(i);
 
-      const b=
-      document
-      .createElement("button");
+    defenseButtons.appendChild(btn);
+  });
 
-      b.className=
-      "line-btn"
-      +
-      activeLineClass(ids);
+  const chips = document.getElementById("selectedChips");
+  chips.innerHTML = "";
 
-      b.textContent=
-      line.name;
+  [...onIce].forEach(id => {
+    const p = roster.find(x => x.id === id);
+    if(!p) return;
 
-      b.onclick=
-      ()=>selectForwardLine(i);
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.textContent = `#${p.number} ${p.name}`;
 
-      fbtn.appendChild(b);
-
-    }
-  );
-
-  const dbtn=
-  document
-  .getElementById(
-    "defensePairButtons"
-  );
-
-  dbtn.innerHTML="";
-
-  lines.defense
-  .forEach(
-    (line,i)=>{
-
-      const ids=
-      ["LD","RD"]
-      .map(
-        k=>line[k]
-      )
-      .filter(Boolean);
-
-      const b=
-      document
-      .createElement("button");
-
-      b.className=
-      "line-btn"
-      +
-      activeLineClass(ids);
-
-      b.textContent=
-      line.name;
-
-      b.onclick=
-      ()=>selectDefensePair(i);
-
-      dbtn.appendChild(b);
-
-    }
-  );
-
-  const chips=
-  document
-  .getElementById(
-    "selectedChips"
-  );
-
-  chips.innerHTML="";
-
-  [...onIce]
-  .forEach(
-    id=>{
-
-      const p=
-      roster.find(
-        x=>x.id===id
-      );
-
-      if(!p)return;
-
-      const c=
-      document
-      .createElement("span");
-
-      c.className="chip";
-
-      c.textContent=
-      `#${p.number} ${p.name}`;
-
-      chips.appendChild(c);
-
-    }
-  );
+    chips.appendChild(chip);
+  });
 
   if(!onIce.size){
-
-    chips.innerHTML=
-    `<span class="notice">
-    No players selected.
-    </span>`;
-
+    chips.innerHTML = `<span class="notice">No players selected.</span>`;
   }
 
-  const list=
-  document
-  .getElementById(
-    "onIcePlayerList"
-  );
+  const onIceList = document.getElementById("onIcePlayerList");
+  onIceList.innerHTML = "";
 
-  list.innerHTML="";
+  activeGame.stats.forEach(s => {
+    const p = roster.find(x => x.id === s.playerId);
 
-  activeGame.stats
-  .forEach(
-    s=>{
+    if(!p || p.position === "G") return;
 
-      const p=
-      roster.find(
-        x=>x.id===s.playerId
-      );
+    const row = document.createElement("div");
 
-      if(
-        !p
-        ||
-        p.position==="G"
-      )return;
+    row.className =
+      "row" +
+      (onIce.has(p.id) ? " selected" : "");
 
-      const r=
-      document
-      .createElement("div");
-
-      r.className=
-      "row"
-      +
-      (
-        onIce.has(p.id)
-        ? " selected"
-        : ""
-      );
-
-      r.innerHTML=`
-
+    row.innerHTML = `
       <div class="row-left">
-
-        <div class="num">
-          #${p.number}
-        </div>
+        <div class="num">#${p.number}</div>
 
         <div>
-
-          <div class="name">
-            ${p.name}
-          </div>
-
-          <div class="meta">
-            ${p.position}
-          </div>
-
+          <div class="name">${p.name}</div>
+          <div class="meta">${p.position}</div>
         </div>
-
       </div>
 
       <div class="right">
-
-        <div class="pm">
-          ${signed(s.plusMinus)}
-        </div>
-
-        <div class="meta">
-
-          ${
-            onIce.has(p.id)
-            ? "Selected"
-            : "Tap to select"
-          }
-
-        </div>
-
+        <div class="pm">${signed(s.plusMinus)}</div>
+        <div class="meta">${onIce.has(p.id) ? "Selected" : "Tap to select"}</div>
       </div>
-      `;
+    `;
 
-      r.onclick=
-      ()=>togglePlayer(p.id);
+    row.onclick = () => togglePlayer(p.id);
 
-      list.appendChild(r);
+    onIceList.appendChild(row);
+  });
 
-    }
-  );
+  const faceoffList = document.getElementById("faceoffList");
+  faceoffList.innerHTML = "";
 
-  const fo=
-  document
-  .getElementById(
-    "faceoffList"
-  );
-
-  fo.innerHTML="";
-
-  const centers=
-  roster.filter(
-    p=>p.position==="C"
-  );
+  const centers = roster.filter(p => p.position === "C");
 
   if(!centers.length){
-
-    fo.innerHTML=
-    `<div class="card notice">
-    No centers on roster.
-    </div>`;
-
+    faceoffList.innerHTML = `<div class="card notice">No centers on roster.</div>`;
   }
 
-  centers.forEach(
-    p=>{
+  centers.forEach(p => {
+    const s = stat(p.id);
+    if(!s) return;
 
-      const s=
-      stat(p.id);
+    const total = s.wins + s.losses;
 
-      if(!s)return;
+    const row = document.createElement("div");
+    row.className = "row fo-row";
 
-      const total=
-      s.wins+s.losses;
-
-      const r=
-      document
-      .createElement("div");
-
-      r.className=
-      "row fo-row";
-
-      r.innerHTML=`
-
+    row.innerHTML = `
       <div class="row-left">
-
-        <div class="num">
-          #${p.number}
-        </div>
+        <div class="num">#${p.number}</div>
 
         <div>
-
-          <div class="name">
-            ${p.name}
-          </div>
-
+          <div class="name">${p.name}</div>
           <div class="meta">
-
-            ${s.wins}-${s.losses}
-
-            ${
-              total
-              ?
-              ` • ${
-                Math.round(
-                  s.wins/total*100
-                )
-              }%`
-              :
-              ""
-            }
-
+            ${s.wins}-${s.losses}${total ? ` • ${Math.round(s.wins / total * 100)}%` : ""}
           </div>
-
         </div>
-
       </div>
 
       <div>
-
         <div class="fo-buttons">
-
-          <button class="green">
-            WIN
-          </button>
-
-          <button class="red">
-            LOSS
-          </button>
-
+          <button class="green">WIN</button>
+          <button class="red">LOSS</button>
         </div>
 
-        <button
-        class="ghost smallbtn full"
-        style="margin-top:6px">
+        <button class="ghost smallbtn full" style="margin-top:6px">
           Undo
         </button>
-
       </div>
-      `;
+    `;
 
-      const bs=
-      r.querySelectorAll(
-        "button"
-      );
+    const buttons = row.querySelectorAll("button");
 
-      bs[0].onclick=
-      ()=>faceoff(
-        p.id,
-        "win"
-      );
+    buttons[0].onclick = () => faceoff(p.id, "win");
+    buttons[1].onclick = () => faceoff(p.id, "loss");
+    buttons[2].onclick = () => undoFaceoff(p.id);
 
-      bs[1].onclick=
-      ()=>faceoff(
-        p.id,
-        "loss"
-      );
-
-      bs[2].onclick=
-      ()=>undoFaceoff(
-        p.id
-      );
-
-      fo.appendChild(r);
-
-    }
-  );
-
+    faceoffList.appendChild(row);
+  });
 }
 
 function renderStats(){
+  const season = document.getElementById("seasonList");
+  season.innerHTML = "";
 
-  const season=
-  document
-  .getElementById(
-    "seasonList"
-  );
+  roster.forEach(p => {
+    let pm = 0;
+    let wins = 0;
+    let losses = 0;
 
-  season.innerHTML="";
+    games.forEach(g => {
+      const s = g.stats.find(x => x.playerId === p.id);
 
-  roster.forEach(
-    p=>{
+      if(s){
+        pm += s.plusMinus;
+        wins += s.wins;
+        losses += s.losses;
+      }
+    });
 
-      let pm=0;
-      let w=0;
-      let l=0;
+    const total = wins + losses;
 
-      games.forEach(
-        g=>{
+    const row = document.createElement("div");
+    row.className = "row";
 
-          const s=
-          g.stats.find(
-            x=>x.playerId===p.id
-          );
-
-          if(s){
-
-            pm+=s.plusMinus;
-            w+=s.wins;
-            l+=s.losses;
-
-          }
-
-        }
-      );
-
-      const t=w+l;
-
-      const r=
-      document
-      .createElement("div");
-
-      r.className="row";
-
-      r.innerHTML=`
-
+    row.innerHTML = `
       <div class="row-left">
-
-        <div class="num">
-          #${p.number}
-        </div>
+        <div class="num">#${p.number}</div>
 
         <div>
-
-          <div class="name">
-            ${p.name}
-          </div>
-
-          <div class="meta">
-            ${p.position}
-          </div>
-
+          <div class="name">${p.name}</div>
+          <div class="meta">${p.position}</div>
         </div>
-
       </div>
 
       <div class="right">
-
-        <div class="pm">
-          ${signed(pm)}
-        </div>
-
+        <div class="pm">${signed(pm)}</div>
         <div class="meta">
-
-          ${
-            t
-            ?
-            `FO ${w}-${l} • ${
-              Math.round(
-                w/t*100
-              )
-            }%`
-            :
-            "FO —"
-          }
-
+          ${total ? `FO ${wins}-${losses} • ${Math.round(wins / total * 100)}%` : "FO —"}
         </div>
-
       </div>
-      `;
+    `;
 
-      season.appendChild(r);
+    season.appendChild(row);
+  });
 
-    }
-  );
-
-  const hist=
-  document
-  .getElementById(
-    "historyList"
-  );
-
-  hist.innerHTML="";
+  const history = document.getElementById("historyList");
+  history.innerHTML = "";
 
   if(!games.length){
-
-    hist.innerHTML=
-    `<div class="card notice">
-    No saved games yet.
-    </div>`;
-
+    history.innerHTML = `<div class="card notice">No saved games yet.</div>`;
   }
 
-  games.forEach(
-    g=>{
+  games.forEach(g => {
+    const wins = g.stats.reduce((a,s) => a + s.wins, 0);
+    const losses = g.stats.reduce((a,s) => a + s.losses, 0);
+    const total = wins + losses;
 
-      const w=
-      g.stats
-      .reduce(
-        (a,s)=>a+s.wins,
-        0
-      );
+    const card = document.createElement("div");
+    card.className = "history-card";
 
-      const l=
-      g.stats
-      .reduce(
-        (a,s)=>a+s.losses,
-        0
-      );
-
-      const t=w+l;
-
-      const c=
-      document
-      .createElement("div");
-
-      c.className=
-      "history-card";
-
-      c.innerHTML=`
-
+    card.innerHTML = `
       <div class="history-head">
-
         <div>
-
-          <strong>
-            vs ${g.opponent}
-          </strong>
-
-          <div class="meta">
-            ${
-              new Date(
-                g.date
-              )
-              .toLocaleDateString()
-            }
-          </div>
-
+          <strong>vs ${g.opponent}</strong>
+          <div class="meta">${new Date(g.date).toLocaleDateString()}</div>
         </div>
 
         <div class="right">
-
           <div class="pm">
-
-            ${
-              signed(
-                g.stats.reduce(
-                  (a,s)=>
-                  a+s.plusMinus,
-                  0
-                )
-              )
-            }
-
+            ${signed(g.stats.reduce((a,s) => a + s.plusMinus, 0))}
           </div>
 
           <div class="meta">
-
-            ${
-              t
-              ?
-              `FO ${
-                Math.round(
-                  w/t*100
-                )
-              }%`
-              :
-              "FO —"
-            }
-
+            ${total ? `FO ${Math.round(wins / total * 100)}%` : "FO —"}
           </div>
-
         </div>
-
       </div>
-      `;
+    `;
 
-      hist.appendChild(c);
-
-    }
-  );
-
+    history.appendChild(card);
+  });
 }
 
 function renderAll(){
-
   renderRoster();
   renderLines();
   renderGame();
   renderStats();
-
 }
 
 renderAll();
-
 </script>
 
 </body>
